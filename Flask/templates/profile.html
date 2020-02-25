@@ -1,0 +1,145 @@
+{% extends "basic.html" %}
+
+{% block content %}
+
+<br>
+<br>
+<style>
+* {
+    box-sizing: border-box;
+}
+
+.reg input[type=text], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.reg label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+}
+
+.reg input[type=submit] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+}
+
+.reg input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+.reg.container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin:20px;
+}
+
+.reg.col-25 {
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+}
+
+#reg.col-75 {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+#reg.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+    .col-25, .col-75, input[type=submit] {
+        width: 100%;
+        margin-top: 0;
+    }
+}
+</style>
+
+  <div  class="posts-list">
+
+
+    <article style="padding:20px;" id="post-1" class="post">
+
+          <form class="reg" action="/updprofile" method="post">
+              <div  class="row">
+      <div class="col-25">
+          <label for="fname">Имя</label>
+      </div>
+
+                  <div class="col-75">
+              <input type="text" id="fname" name = "firstname" value="{{ current_user.firstname }}">
+                  </div>
+              </div>
+              <div  class="row">
+      <div class="col-25">
+          <label for="lname">Фамилия</label>
+      </div>
+                                    <div class="col-75">
+
+                            <input type="text" id='lname' name = "lastname" value="{{ current_user.lastname }}">
+                                    </div></div>
+              <div  class="row">
+      <div class="col-25">
+          <label for="pname">Отчество</label>
+      </div>                                    <div class="col-75">
+
+                            <input type="text" id="pname" name = "patr" value="{{ current_user.patr }}">
+              </div></div>
+              <div  class="row">
+      <div class="col-25">
+          <label for="bd">День рождения</label>
+      </div> <div class="col-75">
+                            <input type="text" id="bd" name = "birthday" value="{{ current_user.birthday }}">
+              </div></div>
+              <div  class="row">
+      <div class="col-25">
+          <label for="nname">Никнейм</label>
+      </div> <div class="col-75">
+                            <input type="text" id="nname" name = "nickname" value="{{ current_user.nickname }}">
+              </div></div>
+              <div  class="row">
+      <div class="col-25">
+          <label for="mail">Email</label>
+      </div> <div class="col-75">
+                            <input type="text" id="mail" name = "email" value="{{ current_user.id }}">
+              </div></div>
+              <input type="hidden" name="password" value="{{ current_user.password }}">
+              <input type="hidden" name="oldemail" value="{{ current_user.id }}">
+
+
+
+
+
+<br>
+          <input class="button" type ="submit" value="Сохранить">
+              <br>
+              <br>
+              <br>
+               </form>
+
+
+
+    </article>
+
+
+  </div> <!-- конец div class="posts-list"-->
+
+
+
+{% endblock %}
