@@ -934,9 +934,9 @@ require.register("dropzone/lib/dropzone.js", function(exports, require, module){
 require.alias("component-emitter/index.js", "dropzone/deps/emitter/index.js");
 
 if (typeof exports == "object") {
-  module.exports = require("dropzone");
+  module.exports = require("Flask/static/lib/dropzone/dropzone");
 } else if (typeof define == "function" && define.amd) {
-  define(require("dropzone"));
+  define(require("Flask/static/lib/dropzone/dropzone"));
 } else {
-  window["Dropzone"] = require("dropzone");
+  window["Dropzone"] = require("Flask/static/lib/dropzone/dropzone");
 }})();
