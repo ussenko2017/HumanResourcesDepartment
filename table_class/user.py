@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine, DateTime
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 from sqlalchemy.orm import sessionmaker
@@ -35,15 +35,16 @@ class DBResponseHandler(ResponseHandler):
 class User(Base):
     __tablename__ = 'user'
     id = Column(Integer(), primary_key=True)
-    lastname = Column(String(50),)
-    firstname = Column(String(50),)
-    patr = Column(String(50),)
+    lastname = Column(String(60),)
+    firstname = Column(String(60),)
+    patr = Column(String(60),)
     birthday = Column(String(50),)
-    nickname = Column(String(50),)
-    email = Column(String(50),unique=True )
+    nickname = Column(String(50),unique=True,nullable=False)
+    email = Column(String(50),unique=True  )
     password = Column(String(50),)
+    active = Column(Boolean,nullable=False)
 
-    def __init__(self,nickname,email,password, lastname, firstname , patr, birthday):
+    def __init__(self,nickname,email,password, lastname, firstname , patr, birthday, active):
         self.nickname = nickname
         self.email = email
         self.password = password
@@ -51,12 +52,13 @@ class User(Base):
         self.firstname = firstname
         self.patr = patr
         self.birthday  = birthday
+        self.active = active
 
     def __repr__(self):
             return "<User('%s','%s', '%s', '%s', '%s', '%s', '%s')>" % (self.nickname, self.email,
                                                                         self.password, self.lastname,
                                                                         self.firstname, self.patr,
-                                                                        self.birthday)
+                                                                        self.birthday, self.active)
 
 def users_serializer(obj):
     return {
@@ -67,7 +69,8 @@ def users_serializer(obj):
         'lastname': obj.lastname,
         'firstname':obj.firstname,
         'patr':obj.patr,
-        'birthday':obj.birthday
+        'birthday':obj.birthday,
+        'active':obj.active
     }
 
 
@@ -123,7 +126,7 @@ class UsersObjectEndpoint(Endpoint, GetObjectMixin,
     def update_object(self, obj):
 
         data = self.request.data
-        allowed_fields = ['nickname','email','password','lastname','firstname','patr','birthday']
+        allowed_fields = ['nickname','email','password','lastname','firstname','patr','birthday', 'active']
 
         for key, val in data.items():
             if key in allowed_fields:
