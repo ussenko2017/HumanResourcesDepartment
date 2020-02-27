@@ -6,6 +6,7 @@ from Flask import app
 import json
 import random
 import requests
+import Flask.mod
 from table_class import user as clUser
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine, DateTime, inspect
@@ -18,7 +19,7 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 engine = create_engine(SQLALCHEMY_DB_URI, echo=DEBUG)
 Session = sessionmaker(bind=engine)
-session = Session()
+
 
 class User(flask_login.UserMixin):
     pass
@@ -26,7 +27,7 @@ class User(flask_login.UserMixin):
 
 @login_manager.user_loader
 def user_loader(nickname):
-
+    session = Session()
     try:
         user_cl = session.query(clUser.User).filter_by(nickname=nickname).all()[0]
     except:
@@ -49,7 +50,7 @@ def user_loader(nickname):
 
 @login_manager.request_loader
 def request_loader(request):
-
+    session = Session()
     nickname = request.form.get('nickname')
     try:
         user_cl = session.query(clUser.User).filter_by(nickname=nickname).all()[0]
@@ -81,6 +82,8 @@ def request_loader(request):
 
 @app.route('/')
 def home():
+    session = Session()
+    alert = Flask.mod.show_alert('danger', 'Привет!', 'Это главная страница!')
     try:
         user = flask_login.current_user.nickname
 
@@ -88,7 +91,7 @@ def home():
         user = 'Гость'
         return flask.redirect(flask.url_for('login_form'))
 
-    return render_template('index.html',  user=user)
+    return render_template('index.html',  user=user, html_alert=alert)
 
 
 @app.route('/login_form', methods=['GET', 'POST'])
@@ -103,6 +106,7 @@ def login_form():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    session = Session()
     nickname = flask.request.form['nickname']
     print('Login: ' + nickname)
     try:
@@ -153,6 +157,7 @@ def unauthorized_handler():
 
 @app.route('/del', methods=['GET', 'POST'])
 def delete():
+    session = Session()
     id = flask.request.values['id']
     redirect = flask.request.values['redirect']
     tablename = flask.request.values['tablename']
@@ -160,3 +165,9 @@ def delete():
     session.execute(sql)
     session.commit()
     return flask.redirect(redirect)
+
+@app.route('/user', methods=['GET', 'POST'])
+def user():
+    session = Session()
+    users = session.query(clUser.User).all()
+    return render_template('/tables/user.html', users=users)
