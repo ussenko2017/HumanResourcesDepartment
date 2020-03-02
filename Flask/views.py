@@ -14,11 +14,24 @@ import flask
 import flask_login
 from config import SQLALCHEMY_DB_URI, DEBUG
 from flask import render_template, g
-login_manager = flask_login.LoginManager()
 
+#uploads_block_begin
+from flask_uploads import UploadSet, configure_uploads, IMAGES,UploadNotAllowed
+UPLOADED_PHOTOS_DEST_USER = '/files/photo/user'
+app.config.from_object(__name__)
+app.config.from_envvar('PHOTOLOG_SETTINGS', silent=True)
+uploaded_photos = UploadSet('photos', IMAGES)
+#configure_uploads(app, uploaded_photos)
+#uploads_block_end
+
+#login_init
+login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
+
+#engine, session init
 engine = create_engine(SQLALCHEMY_DB_URI, echo=DEBUG)
 Session = sessionmaker(bind=engine)
+
 
 
 class User(flask_login.UserMixin):
@@ -29,7 +42,7 @@ class User(flask_login.UserMixin):
 def user_loader(nickname):
     session = Session()
     try:
-        user_cl = session.query(clUser.User).filter_by(nickname=nickname).all()[0]
+        user_cl = session.query(clUser.User).filter_by(nickname=nickname).first()
     except:
         return
     user = User()
@@ -43,6 +56,7 @@ def user_loader(nickname):
     user.password = user_cl.password
     user.email = user_cl.email
     user.active = user_cl.active
+    user.image_name = user_cl.image_name
 
 
     return user
@@ -53,27 +67,29 @@ def request_loader(request):
     session = Session()
     nickname = request.form.get('nickname')
     try:
-        user_cl = session.query(clUser.User).filter_by(nickname=nickname).all()[0]
+        user_cl = session.query(clUser.User).filter_by(nickname=nickname).first()
+        user = User()
+        user.id = user_cl.nickname
+        user.num = user_cl.id
+        user.firstname = user_cl.firstname
+        user.lastname = user_cl.lastname
+        user.patr = user_cl.patr
+        user.birthday = user_cl.birthday
+        user.nickname = user_cl.nickname
+        user.password = user_cl.password
+        user.email = user_cl.email
+        user.active = user_cl.active
+        user.image_name = user_cl.image_name
+
+        # DO NOT ever store passwords in plaintext and always compare password
+        # hashes using constant-time comparison!
+        user.is_authenticated = (flask.request.form['password'] == user_cl.password) and (user.active == 1)
+
+        return user
     except:
         return
 
-    user = User()
-    user.id = user_cl.nickname
-    user.num = user_cl.id
-    user.firstname = user_cl.firstname
-    user.lastname = user_cl.lastname
-    user.patr = user_cl.patr
-    user.birthday = user_cl.birthday
-    user.nickname = user_cl.nickname
-    user.password = user_cl.password
-    user.email = user_cl.email
-    user.active = user_cl.active
 
-    # DO NOT ever store passwords in plaintext and always compare password
-    # hashes using constant-time comparison!
-    user.is_authenticated = (flask.request.form['password'] == user_cl.password) and (user.active == True)
-
-    return user
 
 
 # users = {'foo@bar.tld': {'password': 'secret'}}
@@ -111,7 +127,7 @@ def login():
     print('Login: ' + nickname)
     try:
 
-        user_cl = session.query(clUser.User).filter_by(nickname=nickname).all()[0]
+        user_cl = session.query(clUser.User).filter_by(nickname=nickname).first()
         print('Pass_base: ' + user_cl.password)
     except:
         return flask.redirect(flask.url_for('login_form'))
@@ -129,6 +145,8 @@ def login():
         user.password = user_cl.password
         user.email = user_cl.email
         user.active = user_cl.active
+        user.image_name = user_cl.image_name
+
         flask_login.login_user(user)
 
     return flask.redirect(flask.url_for('home'))
@@ -164,10 +182,27 @@ def delete():
     sql = "DELETE FROM `" + tablename + "` WHERE `" + tablename+"`.id = " + id
     session.execute(sql)
     session.commit()
-    return flask.redirect(redirect)
+    return flask.redirect(flask.url_for(redirect))
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
     session = Session()
     users = session.query(clUser.User).all()
     return render_template('/tables/user.html', users=users)
+
+@app.route('/user/add', methods=['GET', 'POST'])
+def user_add():
+    return render_template('/add_edit_table/user.html')
+
+@app.route('/user/edit', methods=['GET', 'POST'])
+def user_edit():
+    session = Session()
+    id = flask.request.values['id']
+    user_cl = session.query(clUser.User).filter_by(id=id).first()
+    return render_template('/add_edit_table/user.html', user_cl=user_cl)
+
+@app.route('/user/save', methods=['GET', 'POST'])
+def user_save():
+    session = Session()
+    users = session.query(clUser.User).all()
+    return render_template('/add_edit_table/user.html', users=users)

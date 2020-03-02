@@ -42,9 +42,10 @@ class User(Base):
     nickname = Column(String(50),unique=True,nullable=False)
     email = Column(String(50),unique=True  )
     password = Column(String(50),)
+    image_name = Column(String(100),)
     active = Column(Boolean,nullable=False)
 
-    def __init__(self,nickname,email,password, lastname, firstname , patr, birthday, active):
+    def __init__(self,nickname,email,password, lastname, firstname , patr, birthday, active, image_name):
         self.nickname = nickname
         self.email = email
         self.password = password
@@ -53,12 +54,13 @@ class User(Base):
         self.patr = patr
         self.birthday  = birthday
         self.active = active
+        self.image_name = image_name
 
     def __repr__(self):
-            return "<User('%s','%s', '%s', '%s', '%s', '%s', '%s')>" % (self.nickname, self.email,
+            return "<User('%s','%s', '%s', '%s', '%s', '%s', '%s','%s', '%s')>" % (self.nickname, self.email,
                                                                         self.password, self.lastname,
                                                                         self.firstname, self.patr,
-                                                                        self.birthday, self.active)
+                                                                        self.birthday, self.active, self.image_name)
 
 def users_serializer(obj):
     return {
@@ -70,7 +72,8 @@ def users_serializer(obj):
         'firstname':obj.firstname,
         'patr':obj.patr,
         'birthday':obj.birthday,
-        'active':obj.active
+        'active':obj.active,
+        'image_name':obj.image_name
     }
 
 
@@ -126,7 +129,7 @@ class UsersObjectEndpoint(Endpoint, GetObjectMixin,
     def update_object(self, obj):
 
         data = self.request.data
-        allowed_fields = ['nickname','email','password','lastname','firstname','patr','birthday', 'active']
+        allowed_fields = ['nickname','email','password','lastname','firstname','patr','birthday', 'active','image_name']
 
         for key, val in data.items():
             if key in allowed_fields:
