@@ -98,6 +98,7 @@ def request_loader(request):
 
 @app.route('/')
 def home():
+    main_header = 'Главная'
     session = Session()
     alert = Flask.mod.show_alert('danger', 'Привет!', 'Это главная страница!')
     try:
@@ -107,7 +108,7 @@ def home():
         user = 'Гость'
         return flask.redirect(flask.url_for('login_form'))
 
-    return render_template('index.html',  user=user, html_alert=alert)
+    return render_template('index.html',  user=user, html_alert=alert, main_header=main_header)
 
 
 @app.route('/login_form', methods=['GET', 'POST'])
@@ -186,23 +187,28 @@ def delete():
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
+    main_header = 'Администрирование'
     session = Session()
     users = session.query(clUser.User).all()
-    return render_template('/tables/user.html', users=users)
+    return render_template('tables/user.html', users=users, main_header=main_header)
 
-@app.route('/user/add', methods=['GET', 'POST'])
+@app.route('/user-add', methods=['GET', 'POST'])
 def user_add():
-    return render_template('/add_edit_table/user.html')
+    main_header = 'Администрирование'
+    header_text = ' Добавление учетной записи'
+    return render_template('add_edit_table/user.html', header_text=header_text, main_header=main_header)
 
-@app.route('/user/edit', methods=['GET', 'POST'])
+@app.route('/user-edit', methods=['GET', 'POST'])
 def user_edit():
+    main_header = 'Администрирование'
     session = Session()
     id = flask.request.values['id']
     user_cl = session.query(clUser.User).filter_by(id=id).first()
-    return render_template('/add_edit_table/user.html', user_cl=user_cl)
+    header_text = ' Редактирование учетной записи'
+    return render_template('add_edit_table/user.html', user_cl=user_cl, header_text=header_text, main_header=main_header)
 
-@app.route('/user/save', methods=['GET', 'POST'])
+@app.route('/user-save', methods=['GET', 'POST'])
 def user_save():
     session = Session()
     users = session.query(clUser.User).all()
-    return render_template('/add_edit_table/user.html', users=users)
+    return render_template('add_edit_table/user.html', users=users)

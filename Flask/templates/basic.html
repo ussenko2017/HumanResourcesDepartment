@@ -23,6 +23,9 @@
   <link href="static/css/style.css" rel="stylesheet">
   <link href="static/css/style-responsive.css" rel="stylesheet">
   <script src="static/lib/chart-master/Chart.js"></script>
+   <!-- Custom styles for this template -->
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/style-responsive.css" rel="stylesheet">
 
   <!-- =======================================================
     Template Name: Dashio
@@ -372,16 +375,17 @@
     <!--main content start-->
     <section id="main-content">
       <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i> {{ main_header }}</h3>
 {% block content %}{% endblock %}
 
 
 
 
-      </section>
-    </section>
     <!--main content end-->
 
+
   </section>
+    </section></section>
   <!-- js placed at the end of the document so the pages load faster -->
   <script src="static/lib/jquery/jquery.min.js"></script>
 
@@ -397,7 +401,9 @@
   <!--script for this page-->
   <script src="static/lib/sparkline-chart.js"></script>
   <script src="static/lib/zabuto_calendar.js"></script>
-
+ <script type="text/javascript" src="static/lib/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
+  <script src="static/lib/form-component.js"></script>
+  <script src="static/lib/jquery-ui-1.9.2.custom.min.js"></script>
   <script type="application/javascript">
     $(document).ready(function() {
       $("#date-popover").popover({
