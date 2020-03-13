@@ -18,6 +18,7 @@ from flask import render_template, g
 #uploads_block_begin
 from flask_uploads import UploadSet, configure_uploads, IMAGES,UploadNotAllowed
 UPLOADED_PHOTOS_DEST_USER = '/files/photo/user'
+UPLOADED_PHOTOS_DEST_WORKER = '/files/photo/worker'
 app.config.from_object(__name__)
 app.config.from_envvar('PHOTOLOG_SETTINGS', silent=True)
 uploaded_photos = UploadSet('photos', IMAGES)
