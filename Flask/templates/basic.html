@@ -376,7 +376,8 @@
     <section id="main-content">
       <section class="wrapper">
         <h3><i class="fa fa-angle-right"></i> {{ main_header }}</h3>
-{% block content %}{% endblock %}
+{{ alert_html|safe }}
+        {% block content %}{% endblock %}
 
 
 

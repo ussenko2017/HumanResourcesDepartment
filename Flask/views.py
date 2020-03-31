@@ -16,12 +16,12 @@ from config import SQLALCHEMY_DB_URI, DEBUG
 from flask import render_template, g
 
 #uploads_block_begin
-from flask_uploads import UploadSet, configure_uploads, IMAGES,UploadNotAllowed
+#from flask_uploads import UploadSet, configure_uploads, IMAGES,UploadNotAllowed
 UPLOADED_PHOTOS_DEST_USER = '/files/photo/user'
 UPLOADED_PHOTOS_DEST_WORKER = '/files/photo/worker'
 app.config.from_object(__name__)
 app.config.from_envvar('PHOTOLOG_SETTINGS', silent=True)
-uploaded_photos = UploadSet('photos', IMAGES)
+#uploaded_photos = UploadSet('photos', IMAGES)
 #configure_uploads(app, uploaded_photos)
 #uploads_block_end
 
@@ -57,7 +57,7 @@ def user_loader(nickname):
     user.password = user_cl.password
     user.email = user_cl.email
     user.active = user_cl.active
-    user.image_name = user_cl.image_name
+
 
 
     return user
@@ -80,7 +80,7 @@ def request_loader(request):
         user.password = user_cl.password
         user.email = user_cl.email
         user.active = user_cl.active
-        user.image_name = user_cl.image_name
+
 
         # DO NOT ever store passwords in plaintext and always compare password
         # hashes using constant-time comparison!
@@ -101,7 +101,11 @@ def request_loader(request):
 def home():
     main_header = 'Главная'
     session = Session()
-    alert = Flask.mod.show_alert('danger', 'Привет!', 'Это главная страница!')
+
+    alert_html = request.args.get('alert_html')
+    if alert_html is None:
+        alert_html = ''
+
     try:
         user = flask_login.current_user.nickname
 
@@ -109,7 +113,7 @@ def home():
         user = 'Гость'
         return flask.redirect(flask.url_for('login_form'))
 
-    return render_template('index.html',  user=user, html_alert=alert, main_header=main_header)
+    return render_template('index.html',  user=user, alert_html=alert_html, main_header=main_header)
 
 
 @app.route('/login_form', methods=['GET', 'POST'])
@@ -147,7 +151,7 @@ def login():
         user.password = user_cl.password
         user.email = user_cl.email
         user.active = user_cl.active
-        user.image_name = user_cl.image_name
+
 
         flask_login.login_user(user)
 
@@ -188,28 +192,68 @@ def delete():
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
+    alert_html = request.args.get('alert_html')
+    if alert_html is None:
+        alert_html = ''
+
     main_header = 'Администрирование'
     session = Session()
     users = session.query(clUser.User).all()
-    return render_template('tables/user.html', users=users, main_header=main_header)
+    return render_template('tables/user.html', users=users, main_header=main_header, alert_html=alert_html)
 
 @app.route('/user-add', methods=['GET', 'POST'])
 def user_add():
     main_header = 'Администрирование'
     header_text = ' Добавление учетной записи'
-    return render_template('add_edit_table/user.html', header_text=header_text, main_header=main_header)
+
+    return render_template('add_edit_table/user.html', header_text=header_text, main_header=main_header, type_str='add')
 
 @app.route('/user-edit', methods=['GET', 'POST'])
 def user_edit():
     main_header = 'Администрирование'
+    header_text = ' Редактирование учетной записи'
     session = Session()
     id = flask.request.values['id']
     user_cl = session.query(clUser.User).filter_by(id=id).first()
-    header_text = ' Редактирование учетной записи'
-    return render_template('add_edit_table/user.html', user_cl=user_cl, header_text=header_text, main_header=main_header)
+
+
+
+    return render_template('add_edit_table/user.html', user_cl=user_cl, header_text=header_text, main_header=main_header, type_str='edit')
 
 @app.route('/user-save', methods=['GET', 'POST'])
 def user_save():
+    active = None
     session = Session()
+    try:
+        if flask.request.values['active'] == 'on':
+            active = True
+    except:
+        active = False
+    if flask.request.values['id'] == 'add':
+        user_cl = clUser.User(lastname=flask.request.values['lastname'],
+                              firstname=flask.request.values['firstname'],
+                              patr=flask.request.values['patr'],
+                              birthday=flask.request.values['birthday'],
+                              nickname=flask.request.values['nickname'],
+                              email=flask.request.values['email'],
+                              password=flask.request.values['password'],
+                              active=active)
+
+    else:
+        id = flask.request.values['id']
+        user_cl = session.query(clUser.User).filter_by(id=id).first()
+        user_cl.lastname = flask.request.values['lastname']
+        user_cl.firstname = flask.request.values['firstname']
+        user_cl.patr = flask.request.values['patr']
+        user_cl.birthday = flask.request.values['birthday']
+        user_cl.nickname = flask.request.values['nickname']
+        user_cl.email = flask.request.values['email']
+        user_cl.password = flask.request.values['password']
+        user_cl.active = active
+
+    session.add(user_cl)
+    session.commit()
+
     users = session.query(clUser.User).all()
-    return render_template('add_edit_table/user.html', users=users)
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', 'Пользовательские данные сохранены')
+    return flask.redirect(flask.url_for('user', alert_html=alert_html))
