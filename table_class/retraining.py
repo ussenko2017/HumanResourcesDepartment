@@ -32,23 +32,20 @@ class DBResponseHandler(ResponseHandler):
 
 
 
-class Assignment_and_relocation(Base):
-    __tablename__ = 'assignment_and_relocation'
-            # Назначение и перемещение
+class Retraining(Base):
+    __tablename__ = 'retraining'
+            # 5. Переподготовка
 
 
     id = Column(Integer(), primary_key=True)
     worker_id = Column(Integer(), nullable=False)
     date = Column(DateTime(),)#Дата
-    otdel = Column(String(100),)# Цех, отдел, участок
-    prof = Column(String(100),)#Профессия, должность
-    sootvetst = Column(String(100),)# Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)
-    razrad = Column(String(100),unique=True,nullable=False)#тарифный разрад
-    uslov_truda = Column(String(100))#Условия труда
-                #Основание
-    osnov_doc = Column(String(100))#наименование документа
-    osnov_date = Column(DateTime(),)#дата
-    nomer = Column(Integer())# Номер документа
+    special = Column(String(200),)# специальность, профессия
+
+                #Диплом
+
+    osnov_date = Column(DateTime(),)#дата свидетельства
+    nomer = Column(Integer())# Номер свидетельства
 
     date_create = Column(DateTime(), )
     date_edit = Column(DateTime(), )
@@ -56,16 +53,11 @@ class Assignment_and_relocation(Base):
     editor_id = Column(Integer(), )
     active = Column(Boolean, nullable=False)  # Активность записи
 
-    def __init__(self,worker_id,date,otdel, prof, sootvetst , razrad, uslov_truda,
-                 osnov_doc, osnov_date, nomer, date_create, date_edit, creator_id, editor_id, active):
+    def __init__(self,worker_id,date,special, osnov_date, nomer, date_create, date_edit, creator_id, editor_id, active):
         self.worker_id = worker_id
         self.date = date
-        self.otdel = otdel
-        self.prof = prof
-        self.sootvetst = sootvetst
-        self.razrad = razrad
-        self.uslov_truda = uslov_truda
-        self.osnov_doc = osnov_doc
+        self.special = special
+
         self.osnov_date = osnov_date
         self.nomer = nomer
         self.date_create = date_create
@@ -75,9 +67,8 @@ class Assignment_and_relocation(Base):
         self.active = active
 
     def __repr__(self):
-            return "<Assignment_and_relocation('%s','%s','%s', '%s', '%s', '%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')>" % \
-                   (self.worker_id, self.date,self.otdel, self.prof, self.sootvetst , self.razrad,
-                    self.uslov_truda, self.osnov_doc, self.osnov_date,self.nomer,
+            return "<Retraining('%s','%s','%s', '%s', '%s', '%s', '%s', '%s','%s','%s')>" % \
+                   (self.worker_id, self.date,self.special, self.osnov_date,self.nomer,
                     self.date_create, self.date_edit, self.creator_id, self.editor_id,
                                                                         self.active)
 
@@ -86,12 +77,7 @@ def table_serializer(obj):
         'id': obj.id,
         'worker_id':obj.worker_id,
         'date': obj.date,
-        'otdel': obj.otdel,
-        'prof': obj.prof,
-        'sootvetst': obj.sootvetst,
-        'razrad':obj.razrad,
-        'uslov_truda':obj.uslov_truda,
-        'osnov_doc':obj.osnov_doc,
+        'special': obj.special,
         'osnov_date':obj.osnov_date,
         'nomer':obj.nomer,
         'date_create':obj.date_create,
@@ -104,7 +90,7 @@ def table_serializer(obj):
 
 
 
-class Assignment_and_relocationIndexEndpoint(Endpoint, GetListMixin, CreateMixin):
+class RetrainingIndexEndpoint(Endpoint, GetListMixin, CreateMixin):
 
     name = 'list'
     many = True
@@ -117,18 +103,18 @@ class Assignment_and_relocationIndexEndpoint(Endpoint, GetListMixin, CreateMixin
 
     def get_objects(self):
 
-        table = session.query(Assignment_and_relocation).all()
+        table = session.query(Retraining).all()
         return table
 
     def save_object(self, obj):
 
-        table = Assignment_and_relocation(**obj)
-        Base.session.add(Assignment_and_relocation)
+        table = Retraining(**obj)
+        Base.session.add(Retraining)
         session.commit()
         return table
 
 
-class Assignment_and_relocationObjectEndpoint(Endpoint, GetObjectMixin,
+class RetrainingObjectEndpoint(Endpoint, GetObjectMixin,
                               PutObjectMixin, DeleteObjectMixin):
 
     name = 'object'
@@ -143,7 +129,7 @@ class Assignment_and_relocationObjectEndpoint(Endpoint, GetObjectMixin,
     def get_object(self):
 
         obj_id = self.kwargs['obj_id']
-        obj = session.query(Assignment_and_relocation).filter(Assignment_and_relocation.id == obj_id).one_or_none()
+        obj = session.query(Retraining).filter(Retraining.id == obj_id).one_or_none()
         if not obj:
             payload = {
                 "message": "Users object not found.",
@@ -155,8 +141,7 @@ class Assignment_and_relocationObjectEndpoint(Endpoint, GetObjectMixin,
     def update_object(self, obj):
 
         data = self.request.data
-        allowed_fields = ['worker_id','date','otdel', 'prof', 'sootvetst' , 'razrad', 'uslov_truda',
-                 'osnov_doc', 'osnov_date', 'nomer', 'date_create', 'date_edit', 'creator_id', 'editor_id', 'active']
+        allowed_fields = ['worker_id','date','special','osnov_date', 'nomer', 'date_create', 'date_edit', 'creator_id', 'editor_id', 'active']
 
         for key, val in data.items():
             if key in allowed_fields:

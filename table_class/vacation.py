@@ -32,23 +32,27 @@ class DBResponseHandler(ResponseHandler):
 
 
 
-class Assignment_and_relocation(Base):
-    __tablename__ = 'assignment_and_relocation'
-            # Назначение и перемещение
+class Vacation(Base):
+    __tablename__ = 'vacation'
+            # 6. Отпуска
 
 
     id = Column(Integer(), primary_key=True)
     worker_id = Column(Integer(), nullable=False)
-    date = Column(DateTime(),)#Дата
-    otdel = Column(String(100),)# Цех, отдел, участок
-    prof = Column(String(100),)#Профессия, должность
-    sootvetst = Column(String(100),)# Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)
-    razrad = Column(String(100),unique=True,nullable=False)#тарифный разрад
-    uslov_truda = Column(String(100))#Условия труда
-                #Основание
-    osnov_doc = Column(String(100))#наименование документа
-    osnov_date = Column(DateTime(),)#дата
-    nomer = Column(Integer())# Номер документа
+
+    period = Column(String(200),)
+    osnov = Column(String(200),)# Основание
+    kolvo_dney = Column(Integer(),)# кол-во рабочих дней
+            #Дополнительный отпуск
+    dop_1 = Column(String(100),)
+    dop_2 = Column(String(100),)
+    dop_3 = Column(String(100),)
+    itog = Column(String(200),)
+
+    vsego_dney = Column(Integer())
+        #Дата
+    date_begin = Column(DateTime(), )  # Дата начала основного и дополнительного отпуска
+    date_end = Column(DateTime(), )  # Дата окончания основного и дополнительного отпуска
 
     date_create = Column(DateTime(), )
     date_edit = Column(DateTime(), )
@@ -56,18 +60,21 @@ class Assignment_and_relocation(Base):
     editor_id = Column(Integer(), )
     active = Column(Boolean, nullable=False)  # Активность записи
 
-    def __init__(self,worker_id,date,otdel, prof, sootvetst , razrad, uslov_truda,
-                 osnov_doc, osnov_date, nomer, date_create, date_edit, creator_id, editor_id, active):
+    def __init__(self,worker_id,period,osnov, kolvo_dney,dop_1,dop_2,dop_3, itog,vsego_dney,date_begin,date_end, date_create, date_edit, creator_id, editor_id, active):
         self.worker_id = worker_id
-        self.date = date
-        self.otdel = otdel
-        self.prof = prof
-        self.sootvetst = sootvetst
-        self.razrad = razrad
-        self.uslov_truda = uslov_truda
-        self.osnov_doc = osnov_doc
-        self.osnov_date = osnov_date
-        self.nomer = nomer
+
+        self.period = period
+        self.osnov = osnov
+        self.kolvo_dney = kolvo_dney
+        self.dop_1 = dop_1
+        self.dop_2 = dop_2
+        self.dop_3 = dop_3
+        self.itog = itog
+        self.vsego_dney = vsego_dney
+        self.date_begin = date_begin
+        self.date_end = date_end
+
+
         self.date_create = date_create
         self.date_edit = date_edit
         self.creator_id = creator_id
@@ -75,9 +82,10 @@ class Assignment_and_relocation(Base):
         self.active = active
 
     def __repr__(self):
-            return "<Assignment_and_relocation('%s','%s','%s', '%s', '%s', '%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')>" % \
-                   (self.worker_id, self.date,self.otdel, self.prof, self.sootvetst , self.razrad,
-                    self.uslov_truda, self.osnov_doc, self.osnov_date,self.nomer,
+            return "<Vacation('%s','%s','%s', '%s', '%s', '%s', '%s', '%s', '%s'" \
+                   ", '%s', '%s', '%s', '%s', '%s', '%s', '%s')>" % \
+                   (self.worker_id, self.period,self.osnov,self.kolvo_dney,self.dop_1 ,self.dop_2 ,
+                    self.dop_3,self.itog,self.vsego_dney, self.date_begin,self.date_end,
                     self.date_create, self.date_edit, self.creator_id, self.editor_id,
                                                                         self.active)
 
@@ -85,15 +93,18 @@ def table_serializer(obj):
     return {
         'id': obj.id,
         'worker_id':obj.worker_id,
-        'date': obj.date,
-        'otdel': obj.otdel,
-        'prof': obj.prof,
-        'sootvetst': obj.sootvetst,
-        'razrad':obj.razrad,
-        'uslov_truda':obj.uslov_truda,
-        'osnov_doc':obj.osnov_doc,
-        'osnov_date':obj.osnov_date,
-        'nomer':obj.nomer,
+
+        'period': obj.period,
+        'osnov': obj.osnov,
+        'kolvo_dney': obj.kolvo_dney,
+        'dop_1': obj.dop_1,
+        'dop_2': obj.dop_2,
+        'dop_3': obj.dop_3,
+        'itog': obj.itog,
+        'vsego_dney': obj.vsego_dney,
+        'date_begin': obj.date_begin,
+        'date_end': obj.date_end,
+
         'date_create':obj.date_create,
         'date_edit':obj.date_edit,
         'creator_id':obj.creator_id,
@@ -104,7 +115,7 @@ def table_serializer(obj):
 
 
 
-class Assignment_and_relocationIndexEndpoint(Endpoint, GetListMixin, CreateMixin):
+class VacationIndexEndpoint(Endpoint, GetListMixin, CreateMixin):
 
     name = 'list'
     many = True
@@ -117,18 +128,18 @@ class Assignment_and_relocationIndexEndpoint(Endpoint, GetListMixin, CreateMixin
 
     def get_objects(self):
 
-        table = session.query(Assignment_and_relocation).all()
+        table = session.query(Vacation).all()
         return table
 
     def save_object(self, obj):
 
-        table = Assignment_and_relocation(**obj)
-        Base.session.add(Assignment_and_relocation)
+        table = Vacation(**obj)
+        Base.session.add(Vacation)
         session.commit()
         return table
 
 
-class Assignment_and_relocationObjectEndpoint(Endpoint, GetObjectMixin,
+class VacationObjectEndpoint(Endpoint, GetObjectMixin,
                               PutObjectMixin, DeleteObjectMixin):
 
     name = 'object'
@@ -143,7 +154,7 @@ class Assignment_and_relocationObjectEndpoint(Endpoint, GetObjectMixin,
     def get_object(self):
 
         obj_id = self.kwargs['obj_id']
-        obj = session.query(Assignment_and_relocation).filter(Assignment_and_relocation.id == obj_id).one_or_none()
+        obj = session.query(Vacation).filter(Vacation.id == obj_id).one_or_none()
         if not obj:
             payload = {
                 "message": "Users object not found.",
@@ -155,8 +166,8 @@ class Assignment_and_relocationObjectEndpoint(Endpoint, GetObjectMixin,
     def update_object(self, obj):
 
         data = self.request.data
-        allowed_fields = ['worker_id','date','otdel', 'prof', 'sootvetst' , 'razrad', 'uslov_truda',
-                 'osnov_doc', 'osnov_date', 'nomer', 'date_create', 'date_edit', 'creator_id', 'editor_id', 'active']
+        allowed_fields = ['worker_id','period','osnov', 'kolvo_dney','dop_1','dop_2','dop_3', 'itog','vsego_dney',
+                          'date_begin','date_end', 'date_create', 'date_edit', 'creator_id', 'editor_id', 'active']
 
         for key, val in data.items():
             if key in allowed_fields:

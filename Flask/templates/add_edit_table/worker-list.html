@@ -1,0 +1,128 @@
+{% extends "basic.html" %}
+
+{% block content %}
+
+
+<div class="row mt">
+    <div class="panel-heading">
+                <ul class="nav nav-tabs nav-justified">
+                  <li >
+                    <a  href="{{ url_for('worker_edit',id=worker.id) }}">Общие сведения</a>
+                  </li>
+                  <li >
+                    <a  href="{{ url_for('worker_card_edit',id=worker.id) }}" >Личная карточка</a>
+                  </li>
+                  <li class="active">
+                    <a  href="{{ url_for('worker_list_edit',id=worker.id) }}">Личный листок по учету кадров</a>
+                  </li>
+                </ul>
+              </div>
+
+          <div class="col-lg-12">
+            <div class="content-panel">
+                              <h4 class="mb"><i class="fa fa-angle-right"></i> {{ header_text }}</h4>
+
+<form action="{{ url_for('worker_save') }}" class="form-horizontal style-form" method="post">
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Фамилия</label>
+                  <div class="col-sm-10">
+                       {% if type_str == 'edit' %}
+                    <input type="text" class="form-control" name="lastname" value="{{ worker.lastname }}" required>
+                    {% else %}
+                    <input type="text" class="form-control" name="lastname" required>
+                    {% endif %}
+
+
+                  </div>
+                </div>
+
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Имя</label>
+                  <div class="col-sm-10">
+                      {% if type_str == 'edit' %}
+                    <input type="text" class="form-control" name="firstname" value="{{ worker.firstname }}" required>
+                    {% else %}
+                    <input type="text" class="form-control" name="firstname" required>
+                    {% endif %}
+
+                  </div>
+                </div>
+
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Отчество</label>
+                  <div class="col-sm-10">
+                        {% if type_str == 'edit' %}
+                    <input type="text" class="form-control" name="patr" value="{{ worker.patr }}">
+                    {% else %}
+                    <input type="text" class="form-control" name="patr">
+                    {% endif %}
+
+
+                  </div>
+                </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 col-sm-2 control-label">Дата рождения</label>
+               <div class="col-sm-2 col-sm-2 control-label">
+                    {% if type_str == 'edit' %}
+                    <input class="form-control form-control-inline input-medium default-date-picker"
+                           size="16" type="date" name="birthday"  value="{{ worker.birthday }}">
+                    {% else %}
+                    <input class="form-control form-control-inline input-medium default-date-picker"
+                           size="16" type="date" name="birthday">
+                    {% endif %}
+
+
+
+                  </div>
+        </div>
+
+
+
+    <div class="form-group">
+        <label class="col-sm-2 col-sm-2 control-label">E-mail</label>
+                                    <div class="col-sm-10">
+                    {% if type_str == 'edit' %}
+                     <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email" name="email"  value="{{ worker.email }}" required>
+                    {% else %}
+                    <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email" name="email" required>
+                    {% endif %}
+
+
+                                    </div>
+                </div>
+
+
+    <div class="form-group ">
+                    <label for="agree" class="control-label col-lg-2 col-sm-3">Запись активна</label>
+                    <div class="col-lg-10 col-sm-9">
+                        {% if type_str == 'edit' %}
+                            {% if worker.active == False %}
+                                <input type="checkbox"   style="width: 20px" class="checkbox form-control" id="agree" name="active">
+                            {% else %}
+                                <input type="checkbox" checked  style="width: 20px" class="checkbox form-control" id="agree" name="active">
+
+                            {% endif %}
+                        {% else %}
+                            <input type="checkbox" checked  style="width: 20px" class="checkbox form-control" id="agree" name="active">
+                        {% endif %}
+
+
+                    </div>
+                  </div>
+                    {% if type_str == 'edit' %}
+                        <input type="hidden"  value="{{ worker.id }}" name="id">
+                     {% else %}
+                        <input type="hidden"  value="{{ type_str }}" name="id">
+                    {% endif %}
+
+<button type="submit" class="btn btn-theme">Сохранить</button>
+
+
+              </form>
+            </div>
+          </div>
+</div>
+
+
+{% endblock %}

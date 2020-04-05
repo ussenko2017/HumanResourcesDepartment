@@ -37,8 +37,8 @@ class Worker(Base):
         #  Личная карточка
     #  1.Общие сведения
     id = Column(Integer(), primary_key=True)
-    lastname = Column(String(60),)# 1 - Фамилия
-    firstname = Column(String(60),)# 1 - Имя
+    lastname = Column(String(60),nullable=False)# 1 - Фамилия
+    firstname = Column(String(60),nullable=False)# 1 - Имя
     patr = Column(String(60),)# 1 - Отчество
     gender_id = Column(Integer(), nullable=False)#пол id
     birthday = Column(String(50),)# 2 -дата рождения
@@ -94,9 +94,9 @@ class Worker(Base):
     8. Дополнительные сведения
     """
 
-    info = Column(String(), )# Доп. сведения
-    dismissal = Column(String(), )# Дата и причина увольнения
-    order = Column(String(), )#Приказ
+    info = Column(String(5000), )# Доп. сведения
+    dismissal = Column(String(200), )# Дата и причина увольнения
+    order = Column(String(200), )#Приказ
 
     def __init__(self, lastname, firstname , patr, gender_id, birthday,email, image_name, active,birthplace,
                  nation, education, spec_diplom, kvalif_diplom, academ_title, profession, position,
@@ -251,7 +251,7 @@ class WorkerObjectEndpoint(Endpoint, GetObjectMixin,
 
     def get_response_handler_params(self, **params):
 
-        params['serializer'] = worker_serializer()
+        params['serializer'] = worker_serializer
         return params
 
     def get_object(self):

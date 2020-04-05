@@ -262,16 +262,24 @@
               <span>Администрирование</span>
               </a>
           </li>
+          <li class="mt">
+            <a class="sub-menu" href="{{ url_for('worker') }}">
+              <i class="fa fa-dashboard"></i>
+              <span>Карточки работников</span>
+              </a>
+          </li>
           <li class="sub-menu">
             <a href="javascript:;">
               <i class="fa fa-desktop"></i>
               <span>Справочники</span>
               </a>
             <ul class="sub">
-              <li><a href="general.html">General</a></li>
-              <li><a href="buttons.html">Buttons</a></li>
-              <li><a href="panels.html">Panels</a></li>
-              <li><a href="font_awesome.html">Font Awesome</a></li>
+              <li><a href=" url_for('assignment_and_relocation') ">Назначение и перемещение</a></li>
+              <li><a href=" url_for('kvalif_up') ">Повышение квалификации</a></li>
+              <li><a href=" url_for('retraining') ">Переподготовка</a></li>
+              <li><a href=" url_for('vacation') ">Отпуска</a></li>
+              <li><a href="{{ url_for('vac_certification') }}">Аттестация</a></li>
+
             </ul>
           </li>
           <li class="sub-menu">
