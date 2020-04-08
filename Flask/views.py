@@ -16,6 +16,11 @@ import flask
 import flask_login
 from config import SQLALCHEMY_DB_URI, DEBUG
 from flask import render_template, g
+import logging
+logging.basicConfig(level = logging.DEBUG)
+logging.info("Hello views!")
+logging.basicConfig(filename="log.txt", level = logging.INFO)
+
 
 #uploads_block_begin
 #from flask_uploads import UploadSet, configure_uploads, IMAGES,UploadNotAllowed
@@ -345,7 +350,7 @@ def worker_list_edit():
 
 @app.route('/worker-save', methods=['GET', 'POST'])
 def worker_save():
-
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные работника сохранены')
     active = None
     session = Session()
     try:
@@ -355,19 +360,65 @@ def worker_save():
         active = False
 
     wor = ''
-    try:
+    try:    # Общие сведения
+            logging.debug('Общие сведения - начало')
             lastname = flask.request.values['lastname']
             firstname = flask.request.values['firstname']
             patr = flask.request.values['patr']
             gender_id = flask.request.values['gender_id']
             birthday = flask.request.values['birthday']
             email = flask.request.values['email']
-            creator_id = flask.request.values['creator_id']
+            creator_id = flask_login.current_user.num
             date_create = datetime.now()
+
+            editor_id = creator_id
+            date_edit = date_create
+            logging.debug('Общие сведения - перед if')
             if flask.request.values['id'] == 'add':
+                # Создание новой карточки посредством заполнения общих сведений
+                logging.debug('Общие сведения - iF add - начало')
                 wor = worker_py.Worker(lastname=lastname,firstname=firstname,patr=patr,gender_id=gender_id,
-                                       birthday=birthday,email=email, creator_id=creator_id,date_create=date_create)
+                                       birthday=birthday,email=email, creator_id=creator_id,date_create=date_create,
+                                       date_edit=date_edit,editor_id=editor_id, active=active,
+                image_name=None,
+                birthplace=None,
+                nation =None,
+                education=None,
+                spec_diplom =None,
+                kvalif_diplom =None,
+                academ_title=None,
+                profession=None,
+                position=None,
+                stage_work=None,
+                stage_main_position =None,
+                stage_all =None,
+                stage_unbreak =None,
+                stage_self =None,
+                family_pos =None,
+                family_comp=None,
+                issuedBy_series_dateIssue=None,
+                address=None,
+                phone_number=None,
+                acc_group=None,
+                acc_category=None,
+                compos=None,
+                military_rank=None,
+                military_acc =None,
+                suitability =None,
+                military_comm=None,
+                special_acc=None,
+                info=None,
+                dismissal=None,
+                order=None)
+
+                logging.debug('Общие сведения - iF - коммит')
+                session.add(wor)
+                session.commit()
+                logging.debug('Общие сведения - iF - конец')
+
             else:
+                # Редактирование карточки посредством перезаписи общих сведений
+                logging.debug('Общие сведения - iF edit - начало')
                 id = flask.request.values['id']
                 wor = session.query(worker_py.Worker).filter_by(id=id).first()
                 wor.lastname = flask.request.values['lastname']
@@ -379,16 +430,26 @@ def worker_save():
                 wor.active = active
                 # wor.date_create =
                 wor.date_edit = datetime.now()
-                # wor.creator_id = Column(Integer(), )
-                wor.editor_id = flask.request.values['creator_id']
+                # wor.creator_id =
+                wor.editor_id = flask_login.current_user.num
+                logging.debug('Общие сведения - iF edit - коммит, Editor:' + str(wor.editor_id))
+                session.add(wor)
+                session.commit()
+                logging.debug('Общие сведения - iF edit - конец')
 
-            session.add(wor)
-            session.commit()
-    except:
+
+    except Exception as e:
+
+        logging.error(str(e))
         try:
+            # Личная карточка
+            logging.debug('Личная карточка - начало')
             if flask.request.values['id'] == 'add':
+                logging.debug('Личная карточка - IF add')
                 pass
             else:
+                # Редактирование Личной карточки
+                logging.debug('Личная карточка - IF edit - начало')
                 id = flask.request.values['id']
                 wor = session.query(worker_py.Worker).filter_by(id=id).first()
                 wor.image_name = flask.request.values['image_name']  # название изображения  директории '/files/photo/worker'
@@ -432,21 +493,18 @@ def worker_save():
                 wor.info = flask.request.values['info']  # Доп. сведения
                 wor.dismissal = flask.request.values['dismissal']  # Дата и причина увольнения
                 wor.order = flask.request.values['order']  # Приказ
-
+                logging.debug('Личная карточка - IF edit - коммит')
                 session.add(wor)
                 session.commit()
-        except:
-            pass
+                logging.debug('Личная карточка - IF edit - конец')
+        except Exception as e:
+            logging.error(str(e))
+            alert_html = Flask.mod.show_alert('error', 'Ошибка! ', ' Данные не были добавлены из-за ошибки: '+ str(e))
             #Личный лист
 
 
         #
 
-
-
-
-    #users = session.query(clUser.User).all()
-    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные работника сохранены')
     return flask.redirect(flask.url_for('worker', alert_html=alert_html))
 
 

@@ -6,6 +6,7 @@
 <div class="row mt">
     <div class="panel-heading">
                 <ul class="nav nav-tabs nav-justified">
+                    {% if  type_str == 'edit' %}
                   <li class="active">
 
                       <a  href="{{ url_for('worker_edit',id=worker.id) }}">Общие сведения</a>
@@ -16,6 +17,12 @@
                   <li >
                     <a  href="{{ url_for('worker_list_edit',id=worker.id) }}">Личный листок по учету кадров</a>
                   </li>
+                    {% else %}
+                    <li class="active">
+
+                      <a  href="{{ url_for('worker_edit') }}">Общие сведения</a>
+                  </li>
+                    {% endif %}
                 </ul>
               </div>
 
