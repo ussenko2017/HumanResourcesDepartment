@@ -1,0 +1,8 @@
+jinja2
+lxml
+python-docx
+six
+
+[docs]
+Sphinx
+sphinxcontrib-napoleon

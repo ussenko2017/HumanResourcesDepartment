@@ -2,8 +2,11 @@
 
 from datetime import datetime
 
+import mysql
 import sqlalchemy
 from flask import render_template, jsonify,request
+from sqlalchemy.exc import SQLAlchemyError
+
 from Flask import app
 import json
 import random
@@ -203,21 +206,21 @@ def user():
     if alert_html is None:
         alert_html = ''
 
-    main_header = 'Администрирование'
+    main_header = 'Администрирование системных пользователей'
     session = Session()
     users = session.query(clUser.User).all()
     return render_template('tables/user.html', users=users, main_header=main_header, alert_html=alert_html)
 
 @app.route('/user-add', methods=['GET', 'POST'])
 def user_add():
-    main_header = 'Администрирование'
+    main_header = 'Администрирование системных пользователей'
     header_text = ' Добавление учетной записи'
 
     return render_template('add_edit_table/user.html', header_text=header_text, main_header=main_header, type_str='add')
 
 @app.route('/user-edit', methods=['GET', 'POST'])
 def user_edit():
-    main_header = 'Администрирование'
+    main_header = 'Администрирование системных пользователей'
     header_text = ' Редактирование учетной записи'
     session = Session()
     id = flask.request.values['id']
@@ -288,10 +291,10 @@ def worker():
 
 @app.route('/worker-add', methods=['GET', 'POST'])
 def worker_add():
-    main_header = 'Карточки работников'
-    header_text = ' Создание новой карточки'
+    main_header = 'Создание новой карточки работника'
 
-    return render_template('add_edit_table/worker.html', header_text=header_text, main_header=main_header, type_str='add')
+
+    return render_template('add_edit_table/worker.html', main_header=main_header, type_str='add')
 
 
 
@@ -300,52 +303,52 @@ def worker_edit():
     alert_html = request.args.get('alert_html')
     if alert_html is None:
         alert_html = ''
-    main_header = 'Карточки работников'
-    header_text = ' Редактирование карточки'
+    main_header = 'Редактирование карточки работника'
+
     session = Session()
     id = flask.request.values['id']
     wor = session.query(worker_py.Worker).filter_by(id=id).first()
 
 
 
-    return render_template('add_edit_table/worker.html', worker=wor, header_text=header_text, main_header=main_header, type_str='edit',alert_html=alert_html)
+    return render_template('add_edit_table/worker.html', worker=wor, main_header=main_header, type_str='edit',alert_html=alert_html)
 
 
 @app.route('/worker-card-add', methods=['GET', 'POST'])
 def worker_card_add():
-    main_header = 'Карточки работников'
-    header_text = ' Создание новой карточки'
+    main_header = 'Создание новой карточки работника'
 
-    return render_template('add_edit_table/worker-card.html', header_text=header_text, main_header=main_header, type_str='add')
+
+    return render_template('add_edit_table/worker-card.html', main_header=main_header, type_str='add')
 
 @app.route('/worker-card-edit', methods=['GET', 'POST'])
 def worker_card_edit():
-    main_header = 'Карточки работников'
-    header_text = ' Редактирование карточки'
+    main_header = 'Редактирование карточки работника'
+
     session = Session()
     id = flask.request.values['id']
     wor = session.query(worker_py.Worker).filter_by(id=id).first()
 
-    return render_template('add_edit_table/worker-card.html', worker=wor, header_text=header_text, main_header=main_header,
+    return render_template('add_edit_table/worker-card.html', worker=wor,  main_header=main_header,
                            type_str='edit')
 
 @app.route('/worker-list-add', methods=['GET', 'POST'])
 def worker_list_add():
-    main_header = 'Карточки работников'
-    header_text = ' Создание новой карточки'
+    main_header = 'Создание новой карточки работника'
 
-    return render_template('add_edit_table/worker-list.html', header_text=header_text, main_header=main_header, type_str='add')
+
+    return render_template('add_edit_table/worker-list.html',  main_header=main_header, type_str='add')
 
 
 @app.route('/worker-list-edit', methods=['GET', 'POST'])
 def worker_list_edit():
-    main_header = 'Карточки работников'
-    header_text = ' Редактирование карточки'
+    main_header = 'Редактирование карточки работника'
+
     session = Session()
     id = flask.request.values['id']
     wor = session.query(worker_py.Worker).filter_by(id=id).first()
 
-    return render_template('add_edit_table/worker-list.html', worker=wor, header_text=header_text, main_header=main_header,
+    return render_template('add_edit_table/worker-list.html', worker=wor,  main_header=main_header,
                            type_str='edit')
 
 @app.route('/worker-save', methods=['GET', 'POST'])
@@ -361,6 +364,7 @@ def worker_save():
 
     wor = ''
     try:    # Общие сведения
+            empty = ''
             logging.debug('Общие сведения - начало')
             lastname = flask.request.values['lastname']
             firstname = flask.request.values['firstname']
@@ -380,40 +384,48 @@ def worker_save():
                 wor = worker_py.Worker(lastname=lastname,firstname=firstname,patr=patr,gender_id=gender_id,
                                        birthday=birthday,email=email, creator_id=creator_id,date_create=date_create,
                                        date_edit=date_edit,editor_id=editor_id, active=active,
-                image_name=None,
-                birthplace=None,
-                nation =None,
-                education=None,
-                spec_diplom =None,
-                kvalif_diplom =None,
-                academ_title=None,
-                profession=None,
-                position=None,
-                stage_work=None,
-                stage_main_position =None,
-                stage_all =None,
-                stage_unbreak =None,
-                stage_self =None,
-                family_pos =None,
-                family_comp=None,
-                issuedBy_series_dateIssue=None,
-                address=None,
-                phone_number=None,
-                acc_group=None,
-                acc_category=None,
-                compos=None,
-                military_rank=None,
-                military_acc =None,
-                suitability =None,
-                military_comm=None,
-                special_acc=None,
-                info=None,
-                dismissal=None,
-                order=None)
+                image_name=empty,
+                birthplace=empty,
+                nation =empty,
+                education=empty,
+                spec_diplom =empty,
+                kvalif_diplom =empty,
+                academ_title=empty,
+                profession=empty,
+                position=empty,
+                stage_work=empty,
+                stage_main_position =empty,
+                stage_all =empty,
+                stage_unbreak =empty,
+                stage_self =empty,
+                family_pos =empty,
+                family_comp=empty,
+                issuedBy_series_dateIssue=empty,
+                address=empty,
+                phone_number=empty,
+                acc_group=empty,
+                acc_category=empty,
+                compos=empty,
+                military_rank=empty,
+                military_acc =empty,
+                suitability =empty,
+                military_comm=empty,
+                special_acc=empty,
+                info=empty,
+                dismissal=empty,
+                order=empty)
 
                 logging.debug('Общие сведения - iF - коммит')
-                session.add(wor)
-                session.commit()
+                try:
+                    session.add(wor)
+                    session.commit()
+                except SQLAlchemyError as e:
+                    alert_html = Flask.mod.show_alert('danger', 'Ошибка! ',
+                                                      ' Данные не были добавлены. Указанный email уже есть в системе.')
+                except Exception as e:
+                    alert_html = Flask.mod.show_alert('danger', 'Ошибка! ',
+                                                      ' Данные не были добавлены из-за ошибки: ' + str(e))
+
                 logging.debug('Общие сведения - iF - конец')
 
             else:
@@ -453,7 +465,6 @@ def worker_save():
                 id = flask.request.values['id']
                 wor = session.query(worker_py.Worker).filter_by(id=id).first()
                 wor.image_name = flask.request.values['image_name']  # название изображения  директории '/files/photo/worker'
-
                 wor.birthplace = flask.request.values['birthplace']  # 3 - Место рождения
                 wor.nation = flask.request.values['nation']  # 4 - Национальность
                 wor.education = flask.request.values['education']  # 5 - Образование
@@ -463,18 +474,16 @@ def worker_save():
                 wor.profession = flask.request.values['profession']  # 9 - Процессия: основная и др.
                 wor.position = flask.request.values['position']  # 10 - Должность
                 wor.stage_work = flask.request.values['stage_work']  # 10- Стаж работы
-                wor.stage_main_position = flask.request.values[
-                    'stage_main_position']  # 11 - По основной профессии, должности
+                wor.stage_main_position = flask.request.values['stage_main_position']  # 11 - По основной профессии, должности
                 wor.stage_all = flask.request.values['stage_all']  # 12- Общий
                 wor.stage_unbreak = flask.request.values['stage_unbreak']  # 13 - Непрерывный
                 wor.stage_self = flask.request.values['stage_self']  # 14 - В том числе на данном предприятии
                 wor.family_pos = flask.request.values['family_pos']  # 15 - Семейное положение
                 wor.family_comp = flask.request.values['family_comp']  # 16, 17, 18 Состав семьи
-                wor.issuedBy_series_dateIssue = flask.request.values[
-                    'issuedBy_series_dateIssue']  # 19 - Кем выдан, Дата выдачи, Серия
+                wor.issuedBy_series_dateIssue = flask.request.values['issuedBy_series_dateIssue']  # 19 - Кем выдан, Дата выдачи, Серия
                 wor.address = flask.request.values['address']  # 20 - Домашний адрес
                 wor.phone_number = flask.request.values['phone_number']  # 20 - номер телефона
-
+                logging.debug('Личная карточка - IF edit - перед воинскими данными')
                 # 2. Сведения о воинском учете
                 wor.acc_group = flask.request.values['acc_group']  # Группа учета
                 wor.acc_category = flask.request.values['acc_category']  # Категория учета
@@ -488,7 +497,7 @@ def worker_save():
                 # wor.date_create =
                 wor.date_edit = datetime.now()
                 # wor.creator_id = Column(Integer(), )
-                wor.editor_id = flask.request.values['creator_id']
+                wor.editor_id = flask_login.current_user.num
 
                 wor.info = flask.request.values['info']  # Доп. сведения
                 wor.dismissal = flask.request.values['dismissal']  # Дата и причина увольнения
@@ -499,7 +508,7 @@ def worker_save():
                 logging.debug('Личная карточка - IF edit - конец')
         except Exception as e:
             logging.error(str(e))
-            alert_html = Flask.mod.show_alert('error', 'Ошибка! ', ' Данные не были добавлены из-за ошибки: '+ str(e))
+            alert_html = Flask.mod.show_alert('danger', 'Ошибка! ', ' Данные не были добавлены из-за ошибки: '+ str(e))
             #Личный лист
 
 

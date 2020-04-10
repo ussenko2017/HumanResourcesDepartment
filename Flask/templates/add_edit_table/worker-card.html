@@ -7,7 +7,7 @@
     <div class="panel-heading">
                 <ul class="nav nav-tabs nav-justified">
                   <li >
-                    <a  href="{{ url_for('worker_edit',id=worker.id) }}">Общие сведения</a>
+                    <a  href="{{ url_for('worker_edit',id=worker.id) }}">Основная информация</a>
                   </li>
                   <li class="active">
                     <a  href="{{ url_for('worker_card_edit',id=worker.id) }}">Личная карточка</a>
@@ -20,101 +20,192 @@
 
           <div class="col-lg-12">
             <div class="content-panel">
-                              <h4 class="mb"><i class="fa fa-angle-right"></i> {{ header_text }}</h4>
+<h4 class="mb"><i class="fa fa-angle-right"></i> Общие сведения</h4>
 
 <form action="{{ url_for('worker_save') }}" class="form-horizontal style-form" method="post">
     <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Фамилия</label>
+                  <label class="col-sm-2 col-sm-2 control-label">Место рождения</label>
                   <div class="col-sm-10">
-                       {% if type_str == 'edit' %}
-                    <input type="text" class="form-control" name="lastname" value="{{ worker.lastname }}" required>
-                    {% else %}
-                    <input type="text" class="form-control" name="lastname" required>
-                    {% endif %}
-
-
+                    <input type="text" class="form-control" name="birthplace" value="{{ worker.birthplace }}" >
                   </div>
-                </div>
-
+    </div>
     <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Имя</label>
+                  <label class="col-sm-2 col-sm-2 control-label">Национальность</label>
                   <div class="col-sm-10">
-                      {% if type_str == 'edit' %}
-                    <input type="text" class="form-control" name="firstname" value="{{ worker.firstname }}" required>
-                    {% else %}
-                    <input type="text" class="form-control" name="firstname" required>
-                    {% endif %}
-
+                    <input type="text" class="form-control" name="nation" value="{{ worker.nation }}" >
                   </div>
-                </div>
-
-    <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Отчество</label>
-                  <div class="col-sm-10">
-                        {% if type_str == 'edit' %}
-                    <input type="text" class="form-control" name="patr" value="{{ worker.patr }}">
-                    {% else %}
-                    <input type="text" class="form-control" name="patr">
-                    {% endif %}
-
-
-                  </div>
-                </div>
-
-    <div class="form-group">
-        <label class="col-sm-2 col-sm-2 control-label">Дата рождения</label>
-               <div class="col-sm-2 col-sm-2 control-label">
-                    {% if type_str == 'edit' %}
-                    <input class="form-control form-control-inline input-medium default-date-picker"
-                           size="16" type="date" name="birthday"  value="{{ worker.birthday }}">
-                    {% else %}
-                    <input class="form-control form-control-inline input-medium default-date-picker"
-                           size="16" type="date" name="birthday">
-                    {% endif %}
-
-
-
-                  </div>
-        </div>
-
-
-
-    <div class="form-group">
-        <label class="col-sm-2 col-sm-2 control-label">E-mail</label>
-                                    <div class="col-sm-10">
-                    {% if type_str == 'edit' %}
-                     <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email" name="email"  value="{{ worker.email }}" required>
-                    {% else %}
-                    <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email" name="email" required>
-                    {% endif %}
-
-
-                                    </div>
-                </div>
-
-
+    </div>
     <div class="form-group ">
-                    <label for="agree" class="control-label col-lg-2 col-sm-3">Запись активна</label>
-                    <div class="col-lg-10 col-sm-9">
-                        {% if type_str == 'edit' %}
-                            {% if worker.active == False %}
-                                <input type="checkbox"   style="width: 20px" class="checkbox form-control" id="agree" name="active">
-                            {% else %}
-                                <input type="checkbox" checked  style="width: 20px" class="checkbox form-control" id="agree" name="active">
-
-                            {% endif %}
-                        {% else %}
-                            <input type="checkbox" checked  style="width: 20px" class="checkbox form-control" id="agree" name="active">
-                        {% endif %}
-
-
+                    <label for="ccomment1" class="control-label col-lg-2">Образование</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment1" name="education"  style="margin: 0px 490.663px 0px 0px; width: 537px; height: 96px;">{{ worker.education }}</textarea>
                     </div>
+    </div>
+     <div class="form-group ">
+                    <label for="ccomment2" class="control-label col-lg-2">Специальность по диплому (Свидетельству)</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment2" name="spec_diplom"  style="margin: 0px 490.663px 0px 0px; width: 537px; height: 96px;">{{ worker.spec_diplom }}</textarea>
+                    </div>
+    </div>
+    <div class="form-group ">
+                    <label for="ccomment3" class="control-label col-lg-2">Квалификация по диплому (Свидетельству)</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment3" name="kvalif_diplom"  style="margin: 0px 490.663px 0px 0px; width: 537px; height: 96px;">{{ worker.kvalif_diplom }}</textarea>
+                    </div>
+    </div>
+    <div class="form-group ">
+                    <label for="ccomment4" class="control-label col-lg-2">Ученое звание</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment4" name="academ_title"  style="margin: 0px 490.663px 0px 0px; width: 537px; height: 96px;">{{ worker.academ_title }}</textarea>
+                    </div>
+    </div>
+    <div class="form-group ">
+                    <label for="ccomment5" class="control-label col-lg-2">Процессия: основная и др.</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment5" name="profession"  style="margin: 0px 490.663px 0px 0px; width: 537px; height: 96px;">{{ worker.profession }}</textarea>
+                    </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Должность</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="position" value="{{ worker.position }}" >
                   </div>
-                    {% if type_str == 'edit' %}
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Стаж работы</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="stage_work" value="{{ worker.stage_work }}" >
+                  </div>
+    </div>
+    <div class="form-group ">
+                    <label for="ccomment6" class="control-label col-lg-2">По основной профессии, должности</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment6" name="stage_main_position"  style="margin: 0px 490.663px 0px 0px; width: 537px; height: 96px;">{{ worker.stage_main_position }}</textarea>
+                    </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Общий</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="stage_all" value="{{ worker.stage_all }}" >
+                  </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Непрерывный</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="stage_unbreak" value="{{ worker.stage_unbreak }}" >
+                  </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">В том числе на данном предприятии</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="stage_self" value="{{ worker.stage_self }}" >
+                  </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Семейное положение</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="family_pos" value="{{ worker.family_pos }}" >
+                  </div>
+    </div>
+    <div class="form-group ">
+                    <label for="ccomment7" class="control-label col-lg-2">Состав семьи</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment7" name="family_comp"  style="margin: 0px 490.663px 0px 0px; width: 537px; height: 96px;">{{ worker.family_comp }}</textarea>
+                    </div>
+    </div>
+    <div class="form-group ">
+                    <label for="ccomment8" class="control-label col-lg-2">Документ удостоверяющий личность. Кем выдан, Дата выдачи, Серия</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment8" name="issuedBy_series_dateIssue"  style="margin: 0px 490.663px 0px 0px; width: 537px; height: 96px;">{{ worker.issuedBy_series_dateIssue }}</textarea>
+                    </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Домашний адрес</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="address" value="{{ worker.address }}" >
+                  </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Номер телефона</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="phone_number" value="{{ worker.phone_number }}" >
+                  </div>
+    </div>
+
+<h4 class="mb"><i class="fa fa-angle-right"></i> Сведения о воинском учете</h4>
                         <input type="hidden"  value="{{ worker.id }}" name="id">
-                     {% else %}
-                        <input type="hidden"  value="{{ type_str }}" name="id">
-                    {% endif %}
+
+ <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Группа учета</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="acc_group" value="{{ worker.acc_group }}" >
+                  </div>
+    </div>
+     <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Категория учета</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="acc_category" value="{{ worker.acc_category }}" >
+                  </div>
+    </div>
+     <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Cостав</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="compos" value="{{ worker.compos }}" >
+                  </div>
+    </div>
+     <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Воинское звание</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="military_rank" value="{{ worker.military_rank }}" >
+                  </div>
+    </div>
+     <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Военно-учетная</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="military_acc" value="{{ worker.military_acc }}" >
+                  </div>
+    </div>
+     <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Годность к военной службе</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="suitability" value="{{ worker.suitability }}" >
+                  </div>
+    </div>
+     <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Название райвоенкомата по месту жительства</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="military_comm" value="{{ worker.military_comm }}" >
+                  </div>
+    </div>
+     <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Состоит на специальном воинском учете</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="special_acc" value="{{ worker.special_acc }}" >
+                  </div>
+    </div>
+    <h4 class="mb"><i class="fa fa-angle-right"></i> Дополнительные сведения</h4>
+   <div class="form-group ">
+                    <label for="ccomment9" class="control-label col-lg-2">Заметки</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control " id="ccomment9" name="info"  style="margin: 0px 490.663px 0px 0px; width: 900px; height: 400px;">{{ worker.info }}</textarea>
+                    </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Дата и причина увольнения</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="dismissal" value="{{ worker.dismissal }}" >
+                  </div>
+    </div>
+    <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Приказ на увольнение</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="order" value="{{ worker.order }}" >
+                  </div>
+    </div>
+
+
+                        <input type="hidden"  value="{{ worker.id }}" name="id">
+                        <input type="hidden"  value="{{ worker.id }}" name="image_name">
 
 <button type="submit" class="btn btn-theme">Сохранить</button>
 
