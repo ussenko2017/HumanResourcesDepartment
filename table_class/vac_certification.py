@@ -39,7 +39,7 @@ class Vac_certification(Base):
 
     id = Column(Integer(), primary_key=True)
     worker_id = Column(Integer(), nullable=False)
-    date = Column(DateTime(),)#Дата
+    date = Column(String(20),)#Дата
     result_com = Column(String(200),)# Решение комиссии
 
 

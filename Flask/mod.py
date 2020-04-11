@@ -20,30 +20,28 @@ def show_alert(alert_type,header, body):
            ''+body+'</div></div>'
     return html
 
-from docxtpl import DocxTemplate
+def test():
+    from docxtpl import DocxTemplate
 
-doc = DocxTemplate("test.docx")
-context = { 'var_name' : "HELLO WORLD!!!!!!!!!!!" }
-doc.render(context)
-doc.save("generated.docx")
+    doc = DocxTemplate("test.docx")
+    context = {'var_name': "HELLO WORLD!!!!!!!!!!!"}
+    doc.render(context)
+    doc.save("generated.docx")
 
+    import docx
 
+    doc = docx.Document('generated.docx')
 
-import docx
+    # добавляем таблицу 3x3
+    table = doc.add_table(rows=3, cols=3)
+    # применяем стиль для таблицы
 
-doc = docx.Document('generated.docx')
+    # заполняем таблицу даннымиц
+    for row in range(3):
+        for col in range(3):
+            # получаем ячейку таблицы
+            cell = table.cell(row, col)
+            # записываем в ячейку данные
+            cell.text = str(row + 1) + str(col + 1)
 
-# добавляем таблицу 3x3
-table = doc.add_table(rows = 3, cols = 3)
-# применяем стиль для таблицы
-
-
-# заполняем таблицу данными
-for row in range(3):
-    for col in range(3):
-        # получаем ячейку таблицы
-        cell = table.cell(row, col)
-        # записываем в ячейку данные
-        cell.text = str(row + 1) + str(col + 1)
-
-doc.save('generated.docx')
+    doc.save('generated.docx')

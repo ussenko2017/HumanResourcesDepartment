@@ -524,13 +524,16 @@ def worker_save():
 @app.route('/vac-certification', methods=['GET', 'POST'])
 def vac_certification():
     alert_html = request.args.get('alert_html')
+    worker_id = request.args.get('worker_id')
     if alert_html is None:
         alert_html = ''
 
     main_header = 'Справочник "Аттестации"'
     session = Session()
-    vac_cert = session.query(vac_certification.Vac_certification).all()
-    return render_template('tables/vac_certification.html', vac_cert=vac_cert, main_header=main_header, alert_html=alert_html)
+    vac_cert = session.query(vac_certification_py.Vac_certification).filter_by(worker_id=worker_id).all()
+    wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+
+    return render_template('add_edit_table/vac_certification.html', vac_cert=vac_cert,worker=wor ,main_header=main_header, alert_html=alert_html)
 
 @app.route('/vac-certification-add', methods=['GET', 'POST'])
 def vac_certification_add():
@@ -551,6 +554,8 @@ def vac_certification_edit():
 
     return render_template('add_edit_table/vac_certification.html', vac_cert=vac_cert, header_text=header_text, main_header=main_header, type_str='edit')
 
+
+
 @app.route('/vac-certification-save', methods=['GET', 'POST'])
 def vac_certification_save():
     active = None
@@ -560,31 +565,37 @@ def vac_certification_save():
             active = True
     except:
         active = False
+    creator_id = flask_login.current_user.num
+    date_create = datetime.now()
+    editor_id = creator_id
+    date_edit = date_create
+    worker_id = flask.request.values['worker_id']
+
     if flask.request.values['id'] == 'add':
-        user_cl = clUser.User(lastname=flask.request.values['lastname'],
-                              firstname=flask.request.values['firstname'],
-                              patr=flask.request.values['patr'],
-                              birthday=flask.request.values['birthday'],
-                              nickname=flask.request.values['nickname'],
-                              email=flask.request.values['email'],
-                              password=flask.request.values['password'],
+        vac_cert = vac_certification_py.Vac_certification(worker_id=worker_id,
+                              date=flask.request.values['date'],
+                              result_com=flask.request.values['result_com'],
+                              creator_id=creator_id,
+                              date_create=date_create,
+                              date_edit=date_edit,
+                              editor_id=editor_id,
                               active=active)
 
     else:
         id = flask.request.values['id']
-        user_cl = session.query(clUser.User).filter_by(id=id).first()
-        user_cl.lastname = flask.request.values['lastname']
-        user_cl.firstname = flask.request.values['firstname']
-        user_cl.patr = flask.request.values['patr']
-        user_cl.birthday = flask.request.values['birthday']
-        user_cl.nickname = flask.request.values['nickname']
-        user_cl.email = flask.request.values['email']
-        user_cl.password = flask.request.values['password']
-        user_cl.active = active
+        vac_cert = session.query(vac_certification_py.Vac_certification).filter_by(id=id).first()
 
-    session.add(user_cl)
+        vac_cert.worker_id = worker_id
+        vac_cert.date = flask.request.values['date']
+        vac_cert.result_com = flask.request.values['result_com']  # Решение комиссии
+        vac_cert.active = active
+
+        vac_cert.date_edit = date_edit
+        vac_cert.editor_id = editor_id
+
+    session.add(vac_cert)
     session.commit()
 
     users = session.query(clUser.User).all()
     alert_html = Flask.mod.show_alert('success', 'Отлично! ', 'Пользовательские данные сохранены')
-    return flask.redirect(flask.url_for('vac_certification', alert_html=alert_html))
+    return flask.redirect(flask.url_for('vac_certification', alert_html=alert_html, worker_id=worker_id))
