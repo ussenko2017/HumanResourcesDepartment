@@ -39,16 +39,16 @@ class Assignment_and_relocation(Base):
 
     id = Column(Integer(), primary_key=True)
     worker_id = Column(Integer(), nullable=False)
-    date = Column(DateTime(),)#Дата
+    date = Column(String(20),)#Дата
     otdel = Column(String(100),)# Цех, отдел, участок
     prof = Column(String(100),)#Профессия, должность
     sootvetst = Column(String(100),)# Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)
-    razrad = Column(String(100),unique=True,nullable=False)#тарифный разрад
+    razrad = Column(String(100),)#тарифный разрад
     uslov_truda = Column(String(100))#Условия труда
                 #Основание
     osnov_doc = Column(String(100))#наименование документа
-    osnov_date = Column(DateTime(),)#дата
-    nomer = Column(Integer())# Номер документа
+    osnov_date = Column(String(20),)#дата
+    nomer = Column(String(100))# Номер документа
 
     date_create = Column(DateTime(), )
     date_edit = Column(DateTime(), )

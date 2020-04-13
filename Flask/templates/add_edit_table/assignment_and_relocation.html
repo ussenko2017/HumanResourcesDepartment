@@ -17,7 +17,7 @@
                   </li>
                     </ul>
                     <ul class="nav nav-tabs nav-justified">
-                    <li >
+                    <li  class="active">
                     <a  href="{{ url_for('assignment_and_relocation',worker_id=worker.id) }}">Назначение и перемещение</a>
                   </li>
                     <li >
@@ -26,7 +26,7 @@
                     <li >
                     <a  href="{{ url_for('worker_list_edit',worker_id=worker.id) }}">Отпуска</a>
                   </li>
-                     <li class="active">
+                     <li>
                     <a  href="{{ url_for('vac_certification',worker_id=worker.id) }}">Аттестация</a>
                   </li>
                     </ul>
@@ -59,28 +59,28 @@
       }
       #okno2 {
         width: 500px;
-        height: 150px;
+        height: 500px;
         text-align: center;
         padding: 15px;
 
         position: absolute;
         top: 0;
         right: 0;
-        bottom: 0;
+        bottom: -200px;
         left: 0;
         margin: auto;
 
       }
       #okno3 {
         width: 500px;
-        height: 150px;
+        height: 500px;
         text-align: center;
         padding: 15px;
 
         position: absolute;
         top: 0;
         right: 0;
-        bottom: 0;
+        bottom: -200px;
         left: 0;
         margin: auto;
 
@@ -96,19 +96,31 @@
 
 
           <div class="col-md-12">
+
             <div class="content-panel">
-                <div class="zatemnenie custom-box " id="3zatemnenieADD" style="margin-bottom: 100px" >
 
-                    <div  id="okno3" >
+                <div class="zatemnenie custom-box "  id="3zatemnenieADD" >
 
+                <div><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+                </div>
 
-                        <div class="servicetitle" style="background: white; padding: 20px; box-shadow: 0 0 5px 2px;" >
+                    <div  id="okno3" style=" background: white; padding: 20px; box-shadow: 0 0 5px 2px;margin-bottom: 100px; overflow-x: auto;">
+
+                        <div class="servicetitle" style="" >
                             <h3>Добавление</h3>
                             <hr>
 
                     <h5></h5>
-<div class="content-panel">
-                    <form action="{{ url_for('vac_certification_save') }}" class="form-horizontal style-form" method="post">
+<div class="content-panel" >
+                    <form action="{{ url_for('assignment_and_relocation_save') }}"  class="form-horizontal style-form" method="post">
 
                         <div class="form-group">
         <label class="control-label">Дата</label>
@@ -119,9 +131,56 @@
         </div>
 
     <div class="form-group">
-                  <label class=" control-label">Решение комиссии</label>
+                  <label class=" control-label">Цех, отдел, участок</label>
                   <div class="">
-                    <input type="text" class="form-control" name="result_com" value="" >
+                    <input type="text" class="form-control" name="otdel" value="" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">Профессия, должность</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="prof" value="" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="sootvetst" value="" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">Тарифный разрад</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="razrad" value="" >
+                  </div>
+    </div>
+
+
+                        <div class="form-group">
+                  <label class=" control-label">Условия труда</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="uslov_truda" value="" >
+                  </div>
+    </div>
+<h4>Основание</h4>
+                         <div class="form-group">
+                  <label class=" control-label">Наименование документа</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="osnov_doc" value="" >
+                  </div>
+    </div>
+                        <div class="form-group">
+        <label class="control-label">Дата</label>
+               <div class="control-label">
+                    <input class="form-control form-control-inline input-medium default-date-picker"
+                           size="16" type="date" name="osnov_date"  value="">
+                  </div>
+        </div>
+
+                         <div class="form-group">
+                  <label class=" control-label">Номер документа</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="nomer" value="" >
                   </div>
     </div>
                          <div class="form-group ">
@@ -158,14 +217,17 @@
                   <tr>
                     <th><i class="fa fa-bullhorn"></i> №</th>
                     <th class="hidden-phone"><i class="fa fa-question-circle"></i> Дата</th>
-                    <th><i class="fa fa-bookmark"></i> Решение комиссии</th>
+                    <th><i class="fa fa-bookmark"></i> Цех, отдел, участок</th>
+                    <th><i class="fa fa-bookmark"></i> Профессия, должность</th>
+                    <th><i class="fa fa-bookmark"></i> Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)</th>
+                    <th><i class="fa fa-bookmark"></i> Тарифный разряд</th>
                     <th><i class=" fa fa-edit"></i> Активность</th>
                     <th>Редактирование</th>
                     <th>Удаление</th>
                   </tr>
                 </thead>
                 <tbody>
-                 {% for v in vac_cert %}
+                 {% for v in as_reloc %}
                  <div class="zatemnenie custom-box " id="zatemnenie{{ v.id }}" >
                     <div  id="okno" >
 
@@ -189,18 +251,21 @@
                     </div>
                      </div>
 
+
  <div class="zatemnenie custom-box " id="2zatemnenie{{ v.id }}" style="margin-bottom: 100px" >
 
-                    <div  id="okno2" >
+                    <div  id="okno2" style=" background: white; padding: 20px; box-shadow: 0 0 5px 2px;margin-bottom: 100px; overflow-x: auto;">
 
 
-                        <div class="servicetitle" style="background: white; padding: 20px; box-shadow: 0 0 5px 2px;" >
+
+
+                        <div class="servicetitle"  >
                             <h3>Редактирование</h3>
                             <hr>
 
                     <h5></h5>
 <div class="content-panel">
-                    <form action="{{ url_for('vac_certification_save') }}" class="form-horizontal style-form" method="post">
+                    <form action="{{ url_for('assignment_and_relocation_save') }}" class="form-horizontal style-form" method="post">
 
                         <div class="form-group">
         <label class="control-label">Дата</label>
@@ -211,9 +276,55 @@
         </div>
 
     <div class="form-group">
-                  <label class=" control-label">Решение комиссии</label>
+                  <label class=" control-label">Цех, отдел, участок</label>
                   <div class="">
-                    <input type="text" class="form-control" name="result_com" value="{{ v.result_com }}" >
+                    <input type="text" class="form-control" name="otdel" value="{{ v.otdel }}" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">Профессия, должность</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="prof" value="{{ v.prof }}" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="sootvetst" value="{{ v.sootvetst }}" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">Тарифный разрад</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="razrad" value="{{ v.razrad }}" >
+                  </div>
+    </div>
+
+                        <div class="form-group">
+                  <label class=" control-label">Условия труда</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="uslov_truda" value="{{ v.uslov_truda }}" >
+                  </div>
+    </div>
+<h4>Основание</h4>
+                         <div class="form-group">
+                  <label class=" control-label">Наименование документа</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="osnov_doc" value="{{ v.osnov_doc }}" >
+                  </div>
+    </div>
+                        <div class="form-group">
+        <label class="control-label">Дата</label>
+               <div class="control-label">
+                    <input class="form-control form-control-inline input-medium default-date-picker"
+                           size="16" type="date" name="osnov_date"  value="{{ v.osnov_date }}">
+                  </div>
+        </div>
+
+                         <div class="form-group">
+                  <label class=" control-label">Номер документа</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="nomer" value="{{ v.nomer }}" >
                   </div>
     </div>
 
@@ -268,7 +379,10 @@
                       <a href="basic_table.html#">{{ v.id }}</a>
                     </td>
                     <td class="hidden-phone">{{ v.date }}</td>
-                    <td>{{ v.result_com }} </td>
+                    <td>{{ v.otdel }} </td>
+                    <td>{{ v.prof }} </td>
+                    <td>{{ v.sootvetst }} </td>
+                    <td>{{ v.razrad }} </td>
                     <td>
                     {% if v.active %}
                     <span class="label label-success label-mini">Активен</span>

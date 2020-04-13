@@ -12,7 +12,8 @@ import json
 import random
 import requests
 import Flask.mod
-from table_class import user as clUser,worker as worker_py,kvalif_up as kvalif_up_py, retraining as retraining_py, vac_certification as vac_certification_py, vacation as vacation_py
+from table_class import user as clUser,worker as worker_py,kvalif_up as kvalif_up_py, retraining as retraining_py, \
+    vac_certification as vac_certification_py, vacation as vacation_py, assignment_and_relocation as assignment_and_relocation_py
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine, DateTime, inspect
 import flask
@@ -43,8 +44,6 @@ login_manager.init_app(app)
 engine = create_engine(SQLALCHEMY_DB_URI, echo=DEBUG)
 Session = sessionmaker(bind=engine)
 
-
-
 class User(flask_login.UserMixin):
     pass
 
@@ -68,7 +67,7 @@ def user_loader(nickname):
     user.email = user_cl.email
     user.active = user_cl.active
 
-
+    session.close()
 
     return user
 
@@ -95,9 +94,12 @@ def request_loader(request):
         # DO NOT ever store passwords in plaintext and always compare password
         # hashes using constant-time comparison!
         user.is_authenticated = (flask.request.form['password'] == user_cl.password) and (user.active == 1)
+        session.close()
 
         return user
     except:
+        session.close()
+
         return
 
 
@@ -122,6 +124,7 @@ def home():
     except:
         user = 'Гость'
         return flask.redirect(flask.url_for('login_form'))
+    session.close()
 
     return render_template('index.html',  user=user, alert_html=alert_html, main_header=main_header)
 
@@ -132,6 +135,7 @@ def login_form():
         user = flask_login.current_user.nickname
     except:
         return render_template('login_form.html')
+
     return flask.redirect(flask.url_for('home'))
 
 
@@ -164,6 +168,7 @@ def login():
 
 
         flask_login.login_user(user)
+    session.close()
 
     return flask.redirect(flask.url_for('home'))
 
@@ -198,6 +203,8 @@ def delete():
     sql = "DELETE FROM `" + tablename + "` WHERE `" + tablename+"`.id = " + id
     session.execute(sql)
     session.commit()
+    session.close()
+
     return flask.redirect(flask.url_for(redirect))
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -226,7 +233,7 @@ def user_edit():
     id = flask.request.values['id']
     user_cl = session.query(clUser.User).filter_by(id=id).first()
 
-
+    session.close()
 
     return render_template('add_edit_table/user.html', user_cl=user_cl, header_text=header_text, main_header=main_header, type_str='edit')
 
@@ -270,6 +277,7 @@ def user_save():
 
 
     users = session.query(clUser.User).all()
+    session.close()
 
     return flask.redirect(flask.url_for('user', alert_html=alert_html))
 
@@ -285,6 +293,8 @@ def worker():
     main_header = 'Карточки работников'
     session = Session()
     workers = session.query(worker_py.Worker).all()
+    session.close()
+
     return render_template('tables/worker.html', workers=workers, main_header=main_header, alert_html=alert_html)
 
 
@@ -309,7 +319,7 @@ def worker_edit():
     id = flask.request.values['id']
     wor = session.query(worker_py.Worker).filter_by(id=id).first()
 
-
+    session.close()
 
     return render_template('add_edit_table/worker.html', worker=wor, main_header=main_header, type_str='edit',alert_html=alert_html)
 
@@ -328,6 +338,7 @@ def worker_card_edit():
     session = Session()
     id = flask.request.values['id']
     wor = session.query(worker_py.Worker).filter_by(id=id).first()
+    session.close()
 
     return render_template('add_edit_table/worker-card.html', worker=wor,  main_header=main_header,
                            type_str='edit')
@@ -347,6 +358,7 @@ def worker_list_edit():
     session = Session()
     id = flask.request.values['id']
     wor = session.query(worker_py.Worker).filter_by(id=id).first()
+    session.close()
 
     return render_template('add_edit_table/worker-list.html', worker=wor,  main_header=main_header,
                            type_str='edit')
@@ -513,6 +525,7 @@ def worker_save():
 
 
         #
+    session.close()
 
     return flask.redirect(flask.url_for('worker', alert_html=alert_html))
 
@@ -528,36 +541,19 @@ def vac_certification():
     if alert_html is None:
         alert_html = ''
 
-    main_header = 'Справочник "Аттестации"'
+    main_header = 'Аттестации'
     session = Session()
     vac_cert = session.query(vac_certification_py.Vac_certification).filter_by(worker_id=worker_id).all()
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+    session.close()
 
     return render_template('add_edit_table/vac_certification.html', vac_cert=vac_cert,worker=wor ,main_header=main_header, alert_html=alert_html)
-
-@app.route('/vac-certification-add', methods=['GET', 'POST'])
-def vac_certification_add():
-    main_header = 'Справочник "Аттестации"'
-    header_text = ' Добавление "Аттестаций"'
-
-    return render_template('add_edit_table/vac_certification.html', header_text=header_text, main_header=main_header, type_str='add')
-
-@app.route('/vac-certification-edit', methods=['GET', 'POST'])
-def vac_certification_edit():
-    main_header = 'Справочник "Аттестации"'
-    header_text = ' Редактирование "Аттестаций"'
-    session = Session()
-    id = flask.request.values['id']
-    vac_cert = session.query(vac_certification.Vac_certification).filter_by(id=id).first()
-
-
-
-    return render_template('add_edit_table/vac_certification.html', vac_cert=vac_cert, header_text=header_text, main_header=main_header, type_str='edit')
 
 
 
 @app.route('/vac-certification-save', methods=['GET', 'POST'])
 def vac_certification_save():
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные сохранены')
     active = None
     session = Session()
     try:
@@ -593,9 +589,100 @@ def vac_certification_save():
         vac_cert.date_edit = date_edit
         vac_cert.editor_id = editor_id
 
-    session.add(vac_cert)
-    session.commit()
+    try:
+        session.add(vac_cert)
+        session.commit()
+    except Exception as e:
+        logging.error(str(e))
+        alert_html = Flask.mod.show_alert('danger', 'Ошибка! ', ' Не удалось обработать запрос с ошибкой: ' + str(e))
 
     users = session.query(clUser.User).all()
-    alert_html = Flask.mod.show_alert('success', 'Отлично! ', 'Пользовательские данные сохранены')
+    session.close()
+
     return flask.redirect(flask.url_for('vac_certification', alert_html=alert_html, worker_id=worker_id))
+
+
+
+
+@app.route('/assignment-and-relocation', methods=['GET', 'POST'])
+def assignment_and_relocation():
+    alert_html = request.args.get('alert_html')
+    worker_id = request.args.get('worker_id')
+    if alert_html is None:
+        alert_html = ''
+
+    main_header = 'Назначение и перемещение'
+    session = Session()
+    as_reloc = session.query(assignment_and_relocation_py.Assignment_and_relocation).filter_by(worker_id=worker_id).all()
+    wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+    session.close()
+
+    return render_template('add_edit_table/assignment_and_relocation.html', as_reloc=as_reloc,worker=wor ,main_header=main_header, alert_html=alert_html)
+
+
+
+@app.route('/assignment-and-relocation-save', methods=['GET', 'POST'])
+def assignment_and_relocation_save():
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные сохранены')
+    active = None
+    session = Session()
+    try:
+        if flask.request.values['active'] == 'on':
+            active = True
+    except:
+        active = False
+    creator_id = flask_login.current_user.num
+    date_create = datetime.now()
+    editor_id = creator_id
+    date_edit = date_create
+    worker_id = flask.request.values['worker_id']
+
+    if flask.request.values['id'] == 'add':
+        as_reloc = assignment_and_relocation_py.Assignment_and_relocation(worker_id=worker_id,
+                              date=flask.request.values['date'],
+                              otdel = flask.request.values['otdel'] ,
+                              prof = flask.request.values['prof'] ,
+                              sootvetst = flask.request.values['sootvetst'],
+                              razrad = flask.request.values['razrad'] ,
+                              uslov_truda = flask.request.values['uslov_truda'],
+                              osnov_doc = flask.request.values['osnov_doc'] ,
+                              osnov_date = flask.request.values['osnov_date'] ,
+                              nomer = flask.request.values['nomer'],
+                              creator_id=creator_id,
+                              date_create=date_create,
+                              date_edit=date_edit,
+                              editor_id=editor_id,
+                              active=active)
+
+    else:
+        id = flask.request.values['id']
+        as_reloc = session.query(assignment_and_relocation_py.Assignment_and_relocation).filter_by(id=id).first()
+
+        as_reloc.worker_id = worker_id
+        as_reloc.date = flask.request.values['date']
+        as_reloc.otdel = flask.request.values['otdel']  # Цех, отдел, участок
+        as_reloc.prof = flask.request.values['prof'] # Профессия, должность
+        as_reloc.sootvetst = flask.request.values['sootvetst']  # Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)
+        as_reloc.razrad = flask.request.values['razrad'] # тарифный разрад
+        as_reloc.uslov_truda = flask.request.values['uslov_truda']  # Условия труда
+        # Основание
+        as_reloc.osnov_doc = flask.request.values['osnov_doc'] # наименование документа
+        as_reloc.osnov_date = flask.request.values['osnov_date']  # дата
+        as_reloc.nomer = flask.request.values['nomer']  # Номер документа
+
+
+        as_reloc.active = active
+
+        as_reloc.date_edit = date_edit
+        as_reloc.editor_id = editor_id
+
+    try:
+        session.add(as_reloc)
+        session.commit()
+    except Exception as e:
+        logging.error(str(e))
+        alert_html = Flask.mod.show_alert('danger', 'Ошибка! ', ' Не удалось обработать запрос с ошибкой: ' + str(e))
+
+    session.close()
+
+    return flask.redirect(flask.url_for('assignment_and_relocation', alert_html=alert_html, worker_id=worker_id))

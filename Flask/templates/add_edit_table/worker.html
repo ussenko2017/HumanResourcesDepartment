@@ -17,6 +17,21 @@
                   <li >
                     <a  href="{{ url_for('worker_list_edit',id=worker.id) }}">Личный листок по учету кадров</a>
                   </li>
+                </ul>
+                    <ul class="nav nav-tabs nav-justified">
+                    <li  >
+                    <a  href="{{ url_for('assignment_and_relocation',worker_id=worker.id) }}">Назначение и перемещение</a>
+                  </li>
+                    <li >
+                    <a  href="{{ url_for('worker_list_edit',worker_id=worker.id) }}">Повышение квалификации</a>
+                  </li>
+                    <li >
+                    <a  href="{{ url_for('worker_list_edit',worker_id=worker.id) }}">Отпуска</a>
+                  </li>
+                     <li>
+                    <a  href="{{ url_for('vac_certification',worker_id=worker.id) }}">Аттестация</a>
+                  </li>
+                    </ul>
                     {% else %}
                     <li class="active">
 
