@@ -21,10 +21,11 @@ import flask_login
 from config import SQLALCHEMY_DB_URI, DEBUG
 from flask import render_template, g
 import logging
-logging.basicConfig(level = logging.DEBUG)
-logging.info("Hello views!")
-logging.basicConfig(filename="log.txt", level = logging.INFO)
 
+
+
+logging.basicConfig(filename="log.txt", level = logging.DEBUG)
+logging.info("Hello views!")
 
 #uploads_block_begin
 #from flask_uploads import UploadSet, configure_uploads, IMAGES,UploadNotAllowed
@@ -203,9 +204,21 @@ def delete():
     sql = "DELETE FROM `" + tablename + "` WHERE `" + tablename+"`.id = " + id
     session.execute(sql)
     session.commit()
-    session.close()
+    try:
+            worker_id = flask.request.values['worker_id']
+            wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+            session.close()
+            return flask.redirect(flask.url_for(redirect,worker=wor, worker_id = worker_id))
+    except Exception as e:
+        logging.error(str(e))
+        return flask.redirect(flask.url_for(redirect))
 
-    return flask.redirect(flask.url_for(redirect))
+
+
+
+
+
+
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
@@ -686,3 +699,254 @@ def assignment_and_relocation_save():
     session.close()
 
     return flask.redirect(flask.url_for('assignment_and_relocation', alert_html=alert_html, worker_id=worker_id))
+
+
+
+
+
+
+@app.route('/kvalif-up', methods=['GET', 'POST'])
+def kvalif_up():
+    alert_html = request.args.get('alert_html')
+    worker_id = request.args.get('worker_id')
+    if alert_html is None:
+        alert_html = ''
+
+    main_header = 'Повышение квалификации'
+    session = Session()
+    kvalif = session.query(kvalif_up_py.Kvalif_up).filter_by(worker_id=worker_id).all()
+    wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+    session.close()
+
+    return render_template('add_edit_table/kvalif_up.html', kvalif=kvalif,worker=wor ,main_header=main_header, alert_html=alert_html)
+
+
+
+@app.route('/kvalif-up-save', methods=['GET', 'POST'])
+def kvalif_up_save():
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные сохранены')
+    active = None
+    session = Session()
+    try:
+        if flask.request.values['active'] == 'on':
+            active = True
+    except:
+        active = False
+    creator_id = flask_login.current_user.num
+    date_create = datetime.now()
+    editor_id = creator_id
+    date_edit = date_create
+    worker_id = flask.request.values['worker_id']
+
+    if flask.request.values['id'] == 'add':
+        kvalif = kvalif_up_py.Kvalif_up(worker_id=worker_id,
+                              date=flask.request.values['date'],
+                              type_kvalif = flask.request.values['type_kvalif'] ,
+                              osnov_date = flask.request.values['osnov_date'] ,
+                              nomer = flask.request.values['nomer'],
+                              creator_id=creator_id,
+                              date_create=date_create,
+                              date_edit=date_edit,
+                              editor_id=editor_id,
+                              active=active)
+
+    else:
+        id = flask.request.values['id']
+        kvalif = session.query(kvalif_up_py.Kvalif_up).filter_by(id=id).first()
+
+        kvalif.worker_id = worker_id
+        kvalif.date = flask.request.values['date']
+        kvalif.type_kvalif = flask.request.values['type_kvalif']  # Цех, отдел, участок
+
+        # Основание
+
+        kvalif.osnov_date = flask.request.values['osnov_date']  # дата
+        kvalif.nomer = flask.request.values['nomer']  # Номер документа
+
+
+        kvalif.active = active
+
+        kvalif.date_edit = date_edit
+        kvalif.editor_id = editor_id
+
+    try:
+        session.add(kvalif)
+        session.commit()
+    except Exception as e:
+        logging.error(str(e))
+        alert_html = Flask.mod.show_alert('danger', 'Ошибка! ', ' Не удалось обработать запрос с ошибкой: ' + str(e))
+
+    session.close()
+
+    return flask.redirect(flask.url_for('kvalif_up', alert_html=alert_html, worker_id=worker_id))
+
+
+
+
+
+
+@app.route('/retraining', methods=['GET', 'POST'])
+def retraining():
+    alert_html = request.args.get('alert_html')
+    worker_id = request.args.get('worker_id')
+    if alert_html is None:
+        alert_html = ''
+
+    main_header = 'Переподготовка'
+    session = Session()
+    ret = session.query(retraining_py.Retraining).filter_by(worker_id=worker_id).all()
+    wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+    session.close()
+
+    return render_template('add_edit_table/retraining.html', ret=ret,worker=wor ,main_header=main_header, alert_html=alert_html)
+
+
+
+@app.route('/retraining-save', methods=['GET', 'POST'])
+def retraining_save():
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные сохранены')
+    active = None
+    session = Session()
+    try:
+        if flask.request.values['active'] == 'on':
+            active = True
+    except:
+        active = False
+    creator_id = flask_login.current_user.num
+    date_create = datetime.now()
+    editor_id = creator_id
+    date_edit = date_create
+    worker_id = flask.request.values['worker_id']
+
+    if flask.request.values['id'] == 'add':
+        ret = retraining_py.Retraining(worker_id=worker_id,
+                              date=flask.request.values['date'],
+                              special = flask.request.values['special'] ,
+                              osnov_date = flask.request.values['osnov_date'] ,
+                              nomer = flask.request.values['nomer'],
+                              creator_id=creator_id,
+                              date_create=date_create,
+                              date_edit=date_edit,
+                              editor_id=editor_id,
+                              active=active)
+
+    else:
+        id = flask.request.values['id']
+        ret = session.query(retraining_py.Retraining).filter_by(id=id).first()
+
+        ret.worker_id = worker_id
+        ret.date = flask.request.values['date']
+        ret.special = flask.request.values['special']  # Цех, отдел, участок
+
+        # Основание
+
+        ret.osnov_date = flask.request.values['osnov_date']  # дата
+        ret.nomer = flask.request.values['nomer']  # Номер документа
+
+
+        ret.active = active
+
+        ret.date_edit = date_edit
+        ret.editor_id = editor_id
+
+    try:
+        session.add(ret)
+        session.commit()
+    except Exception as e:
+        logging.error(str(e))
+        alert_html = Flask.mod.show_alert('danger', 'Ошибка! ', ' Не удалось обработать запрос с ошибкой: ' + str(e))
+
+    session.close()
+
+    return flask.redirect(flask.url_for('retraining', alert_html=alert_html, worker_id=worker_id))
+
+
+
+
+
+@app.route('/vacation', methods=['GET', 'POST'])
+def vacation():
+    alert_html = request.args.get('alert_html')
+    worker_id = request.args.get('worker_id')
+    if alert_html is None:
+        alert_html = ''
+
+    main_header = 'Отпуска'
+    session = Session()
+    vacat = session.query(vacation_py.Vacation).filter_by(worker_id=worker_id).all()
+    wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+    session.close()
+
+    return render_template('add_edit_table/vacation.html', vacat=vacat,worker=wor ,main_header=main_header, alert_html=alert_html)
+
+
+
+@app.route('/vacation-save', methods=['GET', 'POST'])
+def vacation_save():
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные сохранены')
+    active = None
+    session = Session()
+    try:
+        if flask.request.values['active'] == 'on':
+            active = True
+    except:
+        active = False
+    creator_id = flask_login.current_user.num
+    date_create = datetime.now()
+    editor_id = creator_id
+    date_edit = date_create
+    worker_id = flask.request.values['worker_id']
+
+    if flask.request.values['id'] == 'add':
+        vacat = vacation_py.Vacation(worker_id=worker_id,
+                              period=flask.request.values['period'],
+                              osnov=flask.request.values['osnov'] ,
+                              kolvo_dney=flask.request.values['kolvo_dney'] ,
+                              dop_1=flask.request.values['dop_1'],
+                              dop_2=flask.request.values['dop_2'],
+                              dop_3=flask.request.values['dop_3'],
+                              itog=flask.request.values['itog'] ,
+                              vsego_dney=flask.request.values['vsego_dney'] ,
+                              date_begin=flask.request.values['date_begin'] ,
+                              date_end=flask.request.values['date_end'],
+                              creator_id=creator_id,
+                              date_create=date_create,
+                              date_edit=date_edit,
+                              editor_id=editor_id,
+                              active=active)
+
+    else:
+        id = flask.request.values['id']
+        vacat = session.query(vacation_py.Vacation).filter_by(id=id).first()
+
+        vacat.worker_id = worker_id
+        vacat.period = flask.request.values['period']
+        vacat.osnov = flask.request.values['osnov']  # Основание
+        vacat.kolvo_dney = flask.request.values['kolvo_dney']  # кол-во рабочих дней
+        # Дополнительный отпуск
+        vacat.dop_1 = flask.request.values['dop_1']
+        vacat.dop_2 = flask.request.values['dop_2']
+        vacat.dop_3 =flask.request.values['dop_3']
+        vacat.itog = flask.request.values['itog']
+
+        vacat.vsego_dney = flask.request.values['vsego_dney']
+        # Дата
+        vacat.date_begin = flask.request.values['date_begin'] # Дата начала основного и дополнительного отпуска
+        vacat.date_end = flask.request.values['date_end'] # Дата окончания основного и дополнительного отпуска
+        vacat.active = active
+
+        vacat.date_edit = date_edit
+        vacat.editor_id = editor_id
+
+    try:
+        session.add(vacat)
+        session.commit()
+    except Exception as e:
+        logging.error(str(e))
+        alert_html = Flask.mod.show_alert('danger', 'Ошибка! ', ' Не удалось обработать запрос с ошибкой: ' + str(e))
+
+    session.close()
+
+    return flask.redirect(flask.url_for('vacation', alert_html=alert_html, worker_id=worker_id))
+
+

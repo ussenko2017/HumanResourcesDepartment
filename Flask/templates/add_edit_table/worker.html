@@ -19,14 +19,17 @@
                   </li>
                 </ul>
                     <ul class="nav nav-tabs nav-justified">
-                    <li  >
+                    <li >
                     <a  href="{{ url_for('assignment_and_relocation',worker_id=worker.id) }}">Назначение и перемещение</a>
                   </li>
                     <li >
-                    <a  href="{{ url_for('worker_list_edit',worker_id=worker.id) }}">Повышение квалификации</a>
+                    <a  href="{{ url_for('kvalif_up',worker_id=worker.id) }}">Повышение квалификации</a>
+                  </li>
+                        <li >
+                    <a  href="{{ url_for('retraining',worker_id=worker.id) }}">Переподготовка</a>
                   </li>
                     <li >
-                    <a  href="{{ url_for('worker_list_edit',worker_id=worker.id) }}">Отпуска</a>
+                    <a  href="{{ url_for('vacation',worker_id=worker.id) }}">Отпуска</a>
                   </li>
                      <li>
                     <a  href="{{ url_for('vac_certification',worker_id=worker.id) }}">Аттестация</a>

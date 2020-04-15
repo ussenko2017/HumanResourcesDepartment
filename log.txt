@@ -1,0 +1,160 @@
+INFO:root:Hello views!
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 197-086-057
+INFO:werkzeug: * Running on http://localhost:5000/ (Press CTRL+C to quit)
+INFO:root:Hello views!
+INFO:werkzeug: * Restarting with stat
+INFO:root:Hello views!
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 197-086-057
+INFO:werkzeug: * Running on http://localhost:5000/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:00:42] "[33mGET /index.html HTTP/1.1[0m" 404 -
+INFO:sqlalchemy.engine.base.Engine:SHOW VARIABLES LIKE 'sql_mode'
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:SHOW VARIABLES LIKE 'lower_case_table_names'
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:SELECT DATABASE()
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:SELECT CAST('test plain returns' AS CHAR(60)) AS anon_1
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:SELECT CAST('test unicode returns' AS CHAR(60)) AS anon_1
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT user.id AS user_id, user.lastname AS user_lastname, user.firstname AS user_firstname, user.patr AS user_patr, user.birthday AS user_birthday, user.nickname AS user_nickname, user.email AS user_email, user.password AS user_password, user.active AS user_active 
+FROM user 
+WHERE user.nickname = %(nickname_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'nickname_1': 'admin', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:00:43] "[37mGET / HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:00:44] "[33mGET /static/img/nav-expand.png HTTP/1.1[0m" 404 -
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT worker.id AS worker_id, worker.lastname AS worker_lastname, worker.firstname AS worker_firstname, worker.patr AS worker_patr, worker.gender_id AS worker_gender_id, worker.birthday AS worker_birthday, worker.email AS worker_email, worker.image_name AS worker_image_name, worker.active AS worker_active, worker.birthplace AS worker_birthplace, worker.nation AS worker_nation, worker.education AS worker_education, worker.spec_diplom AS worker_spec_diplom, worker.kvalif_diplom AS worker_kvalif_diplom, worker.academ_title AS worker_academ_title, worker.profession AS worker_profession, worker.position AS worker_position, worker.stage_work AS worker_stage_work, worker.stage_main_position AS worker_stage_main_position, worker.stage_all AS worker_stage_all, worker.stage_unbreak AS worker_stage_unbreak, worker.stage_self AS worker_stage_self, worker.family_pos AS worker_family_pos, worker.family_comp AS worker_family_comp, worker.`issuedBy_series_dateIssue` AS `worker_issuedBy_series_dateIssue`, worker.address AS worker_address, worker.phone_number AS worker_phone_number, worker.acc_group AS worker_acc_group, worker.acc_category AS worker_acc_category, worker.compos AS worker_compos, worker.military_rank AS worker_military_rank, worker.military_acc AS worker_military_acc, worker.suitability AS worker_suitability, worker.military_comm AS worker_military_comm, worker.special_acc AS worker_special_acc, worker.date_create AS worker_date_create, worker.date_edit AS worker_date_edit, worker.creator_id AS worker_creator_id, worker.editor_id AS worker_editor_id, worker.info AS worker_info, worker.dismissal AS worker_dismissal, worker.`order` AS worker_order 
+FROM worker
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT user.id AS user_id, user.lastname AS user_lastname, user.firstname AS user_firstname, user.patr AS user_patr, user.birthday AS user_birthday, user.nickname AS user_nickname, user.email AS user_email, user.password AS user_password, user.active AS user_active 
+FROM user 
+WHERE user.nickname = %(nickname_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'nickname_1': 'admin', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:00:45] "[37mGET /worker HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:00:46] "[33mGET /static/img/nav-expand.png HTTP/1.1[0m" 404 -
+INFO:root:Hello views!
+INFO:werkzeug: * Restarting with stat
+INFO:root:Hello views!
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 197-086-057
+INFO:werkzeug: * Running on http://localhost:5000/ (Press CTRL+C to quit)
+INFO:root:Hello views!
+INFO:werkzeug: * Restarting with stat
+INFO:root:Hello views!
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 197-086-057
+INFO:werkzeug: * Running on http://localhost:5000/ (Press CTRL+C to quit)
+INFO:root:Hello views!
+INFO:werkzeug: * Restarting with stat
+INFO:root:Hello views!
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 197-086-057
+INFO:werkzeug: * Running on http://localhost:5000/ (Press CTRL+C to quit)
+INFO:sqlalchemy.engine.base.Engine:SHOW VARIABLES LIKE 'sql_mode'
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:SHOW VARIABLES LIKE 'lower_case_table_names'
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:SELECT DATABASE()
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:SELECT CAST('test plain returns' AS CHAR(60)) AS anon_1
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:SELECT CAST('test unicode returns' AS CHAR(60)) AS anon_1
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT worker.id AS worker_id, worker.lastname AS worker_lastname, worker.firstname AS worker_firstname, worker.patr AS worker_patr, worker.gender_id AS worker_gender_id, worker.birthday AS worker_birthday, worker.email AS worker_email, worker.image_name AS worker_image_name, worker.active AS worker_active, worker.birthplace AS worker_birthplace, worker.nation AS worker_nation, worker.education AS worker_education, worker.spec_diplom AS worker_spec_diplom, worker.kvalif_diplom AS worker_kvalif_diplom, worker.academ_title AS worker_academ_title, worker.profession AS worker_profession, worker.position AS worker_position, worker.stage_work AS worker_stage_work, worker.stage_main_position AS worker_stage_main_position, worker.stage_all AS worker_stage_all, worker.stage_unbreak AS worker_stage_unbreak, worker.stage_self AS worker_stage_self, worker.family_pos AS worker_family_pos, worker.family_comp AS worker_family_comp, worker.`issuedBy_series_dateIssue` AS `worker_issuedBy_series_dateIssue`, worker.address AS worker_address, worker.phone_number AS worker_phone_number, worker.acc_group AS worker_acc_group, worker.acc_category AS worker_acc_category, worker.compos AS worker_compos, worker.military_rank AS worker_military_rank, worker.military_acc AS worker_military_acc, worker.suitability AS worker_suitability, worker.military_comm AS worker_military_comm, worker.special_acc AS worker_special_acc, worker.date_create AS worker_date_create, worker.date_edit AS worker_date_edit, worker.creator_id AS worker_creator_id, worker.editor_id AS worker_editor_id, worker.info AS worker_info, worker.dismissal AS worker_dismissal, worker.`order` AS worker_order 
+FROM worker 
+WHERE worker.id = %(id_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'id_1': '6', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT user.id AS user_id, user.lastname AS user_lastname, user.firstname AS user_firstname, user.patr AS user_patr, user.birthday AS user_birthday, user.nickname AS user_nickname, user.email AS user_email, user.password AS user_password, user.active AS user_active 
+FROM user 
+WHERE user.nickname = %(nickname_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'nickname_1': 'admin', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:16] "[37mPOST /worker-edit HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:17] "[33mGET /static/img/nav-expand.png HTTP/1.1[0m" 404 -
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT retraining.id AS retraining_id, retraining.worker_id AS retraining_worker_id, retraining.date AS retraining_date, retraining.special AS retraining_special, retraining.osnov_date AS retraining_osnov_date, retraining.nomer AS retraining_nomer, retraining.date_create AS retraining_date_create, retraining.date_edit AS retraining_date_edit, retraining.creator_id AS retraining_creator_id, retraining.editor_id AS retraining_editor_id, retraining.active AS retraining_active 
+FROM retraining 
+WHERE retraining.worker_id = %(worker_id_1)s
+INFO:sqlalchemy.engine.base.Engine:{'worker_id_1': '6'}
+INFO:sqlalchemy.engine.base.Engine:SELECT worker.id AS worker_id, worker.lastname AS worker_lastname, worker.firstname AS worker_firstname, worker.patr AS worker_patr, worker.gender_id AS worker_gender_id, worker.birthday AS worker_birthday, worker.email AS worker_email, worker.image_name AS worker_image_name, worker.active AS worker_active, worker.birthplace AS worker_birthplace, worker.nation AS worker_nation, worker.education AS worker_education, worker.spec_diplom AS worker_spec_diplom, worker.kvalif_diplom AS worker_kvalif_diplom, worker.academ_title AS worker_academ_title, worker.profession AS worker_profession, worker.position AS worker_position, worker.stage_work AS worker_stage_work, worker.stage_main_position AS worker_stage_main_position, worker.stage_all AS worker_stage_all, worker.stage_unbreak AS worker_stage_unbreak, worker.stage_self AS worker_stage_self, worker.family_pos AS worker_family_pos, worker.family_comp AS worker_family_comp, worker.`issuedBy_series_dateIssue` AS `worker_issuedBy_series_dateIssue`, worker.address AS worker_address, worker.phone_number AS worker_phone_number, worker.acc_group AS worker_acc_group, worker.acc_category AS worker_acc_category, worker.compos AS worker_compos, worker.military_rank AS worker_military_rank, worker.military_acc AS worker_military_acc, worker.suitability AS worker_suitability, worker.military_comm AS worker_military_comm, worker.special_acc AS worker_special_acc, worker.date_create AS worker_date_create, worker.date_edit AS worker_date_edit, worker.creator_id AS worker_creator_id, worker.editor_id AS worker_editor_id, worker.info AS worker_info, worker.dismissal AS worker_dismissal, worker.`order` AS worker_order 
+FROM worker 
+WHERE worker.id = %(id_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'id_1': '6', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT user.id AS user_id, user.lastname AS user_lastname, user.firstname AS user_firstname, user.patr AS user_patr, user.birthday AS user_birthday, user.nickname AS user_nickname, user.email AS user_email, user.password AS user_password, user.active AS user_active 
+FROM user 
+WHERE user.nickname = %(nickname_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'nickname_1': 'admin', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:25] "[37mGET /retraining?worker_id=6 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:26] "[33mGET /static/img/nav-expand.png HTTP/1.1[0m" 404 -
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT vac_certification.id AS vac_certification_id, vac_certification.worker_id AS vac_certification_worker_id, vac_certification.date AS vac_certification_date, vac_certification.result_com AS vac_certification_result_com, vac_certification.date_create AS vac_certification_date_create, vac_certification.date_edit AS vac_certification_date_edit, vac_certification.creator_id AS vac_certification_creator_id, vac_certification.editor_id AS vac_certification_editor_id, vac_certification.active AS vac_certification_active 
+FROM vac_certification 
+WHERE vac_certification.worker_id = %(worker_id_1)s
+INFO:sqlalchemy.engine.base.Engine:{'worker_id_1': '6'}
+INFO:sqlalchemy.engine.base.Engine:SELECT worker.id AS worker_id, worker.lastname AS worker_lastname, worker.firstname AS worker_firstname, worker.patr AS worker_patr, worker.gender_id AS worker_gender_id, worker.birthday AS worker_birthday, worker.email AS worker_email, worker.image_name AS worker_image_name, worker.active AS worker_active, worker.birthplace AS worker_birthplace, worker.nation AS worker_nation, worker.education AS worker_education, worker.spec_diplom AS worker_spec_diplom, worker.kvalif_diplom AS worker_kvalif_diplom, worker.academ_title AS worker_academ_title, worker.profession AS worker_profession, worker.position AS worker_position, worker.stage_work AS worker_stage_work, worker.stage_main_position AS worker_stage_main_position, worker.stage_all AS worker_stage_all, worker.stage_unbreak AS worker_stage_unbreak, worker.stage_self AS worker_stage_self, worker.family_pos AS worker_family_pos, worker.family_comp AS worker_family_comp, worker.`issuedBy_series_dateIssue` AS `worker_issuedBy_series_dateIssue`, worker.address AS worker_address, worker.phone_number AS worker_phone_number, worker.acc_group AS worker_acc_group, worker.acc_category AS worker_acc_category, worker.compos AS worker_compos, worker.military_rank AS worker_military_rank, worker.military_acc AS worker_military_acc, worker.suitability AS worker_suitability, worker.military_comm AS worker_military_comm, worker.special_acc AS worker_special_acc, worker.date_create AS worker_date_create, worker.date_edit AS worker_date_edit, worker.creator_id AS worker_creator_id, worker.editor_id AS worker_editor_id, worker.info AS worker_info, worker.dismissal AS worker_dismissal, worker.`order` AS worker_order 
+FROM worker 
+WHERE worker.id = %(id_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'id_1': '6', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT user.id AS user_id, user.lastname AS user_lastname, user.firstname AS user_firstname, user.patr AS user_patr, user.birthday AS user_birthday, user.nickname AS user_nickname, user.email AS user_email, user.password AS user_password, user.active AS user_active 
+FROM user 
+WHERE user.nickname = %(nickname_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'nickname_1': 'admin', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:29] "[37mGET /vac-certification?worker_id=6 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:29] "[33mGET /static/img/nav-expand.png HTTP/1.1[0m" 404 -
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:DELETE FROM `vac_certification` WHERE `vac_certification`.id = 3
+INFO:sqlalchemy.engine.base.Engine:{}
+INFO:sqlalchemy.engine.base.Engine:COMMIT
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT worker.id AS worker_id, worker.lastname AS worker_lastname, worker.firstname AS worker_firstname, worker.patr AS worker_patr, worker.gender_id AS worker_gender_id, worker.birthday AS worker_birthday, worker.email AS worker_email, worker.image_name AS worker_image_name, worker.active AS worker_active, worker.birthplace AS worker_birthplace, worker.nation AS worker_nation, worker.education AS worker_education, worker.spec_diplom AS worker_spec_diplom, worker.kvalif_diplom AS worker_kvalif_diplom, worker.academ_title AS worker_academ_title, worker.profession AS worker_profession, worker.position AS worker_position, worker.stage_work AS worker_stage_work, worker.stage_main_position AS worker_stage_main_position, worker.stage_all AS worker_stage_all, worker.stage_unbreak AS worker_stage_unbreak, worker.stage_self AS worker_stage_self, worker.family_pos AS worker_family_pos, worker.family_comp AS worker_family_comp, worker.`issuedBy_series_dateIssue` AS `worker_issuedBy_series_dateIssue`, worker.address AS worker_address, worker.phone_number AS worker_phone_number, worker.acc_group AS worker_acc_group, worker.acc_category AS worker_acc_category, worker.compos AS worker_compos, worker.military_rank AS worker_military_rank, worker.military_acc AS worker_military_acc, worker.suitability AS worker_suitability, worker.military_comm AS worker_military_comm, worker.special_acc AS worker_special_acc, worker.date_create AS worker_date_create, worker.date_edit AS worker_date_edit, worker.creator_id AS worker_creator_id, worker.editor_id AS worker_editor_id, worker.info AS worker_info, worker.dismissal AS worker_dismissal, worker.`order` AS worker_order 
+FROM worker 
+WHERE worker.id = %(id_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'id_1': '6', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:33] "[32mPOST /del HTTP/1.1[0m" 302 -
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT vac_certification.id AS vac_certification_id, vac_certification.worker_id AS vac_certification_worker_id, vac_certification.date AS vac_certification_date, vac_certification.result_com AS vac_certification_result_com, vac_certification.date_create AS vac_certification_date_create, vac_certification.date_edit AS vac_certification_date_edit, vac_certification.creator_id AS vac_certification_creator_id, vac_certification.editor_id AS vac_certification_editor_id, vac_certification.active AS vac_certification_active 
+FROM vac_certification 
+WHERE vac_certification.worker_id = %(worker_id_1)s
+INFO:sqlalchemy.engine.base.Engine:{'worker_id_1': '6'}
+INFO:sqlalchemy.engine.base.Engine:SELECT worker.id AS worker_id, worker.lastname AS worker_lastname, worker.firstname AS worker_firstname, worker.patr AS worker_patr, worker.gender_id AS worker_gender_id, worker.birthday AS worker_birthday, worker.email AS worker_email, worker.image_name AS worker_image_name, worker.active AS worker_active, worker.birthplace AS worker_birthplace, worker.nation AS worker_nation, worker.education AS worker_education, worker.spec_diplom AS worker_spec_diplom, worker.kvalif_diplom AS worker_kvalif_diplom, worker.academ_title AS worker_academ_title, worker.profession AS worker_profession, worker.position AS worker_position, worker.stage_work AS worker_stage_work, worker.stage_main_position AS worker_stage_main_position, worker.stage_all AS worker_stage_all, worker.stage_unbreak AS worker_stage_unbreak, worker.stage_self AS worker_stage_self, worker.family_pos AS worker_family_pos, worker.family_comp AS worker_family_comp, worker.`issuedBy_series_dateIssue` AS `worker_issuedBy_series_dateIssue`, worker.address AS worker_address, worker.phone_number AS worker_phone_number, worker.acc_group AS worker_acc_group, worker.acc_category AS worker_acc_category, worker.compos AS worker_compos, worker.military_rank AS worker_military_rank, worker.military_acc AS worker_military_acc, worker.suitability AS worker_suitability, worker.military_comm AS worker_military_comm, worker.special_acc AS worker_special_acc, worker.date_create AS worker_date_create, worker.date_edit AS worker_date_edit, worker.creator_id AS worker_creator_id, worker.editor_id AS worker_editor_id, worker.info AS worker_info, worker.dismissal AS worker_dismissal, worker.`order` AS worker_order 
+FROM worker 
+WHERE worker.id = %(id_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'id_1': '6', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:sqlalchemy.engine.base.Engine:BEGIN (implicit)
+INFO:sqlalchemy.engine.base.Engine:SELECT user.id AS user_id, user.lastname AS user_lastname, user.firstname AS user_firstname, user.patr AS user_patr, user.birthday AS user_birthday, user.nickname AS user_nickname, user.email AS user_email, user.password AS user_password, user.active AS user_active 
+FROM user 
+WHERE user.nickname = %(nickname_1)s 
+ LIMIT %(param_1)s
+INFO:sqlalchemy.engine.base.Engine:{'nickname_1': 'admin', 'param_1': 1}
+INFO:sqlalchemy.engine.base.Engine:ROLLBACK
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:33] "[37mGET /vac-certification?worker=%3CWorker%28%27Усенко%27%2C%27Андрей%27%2C+%27Валерьевич%27%2C%271%27%2C+%272000-07-15%27%2C+%27ussenko2017%40mail.ru%27%2C+%276%27%2C+%27True%27%2C+%27Астраханка%27%2C+%27Русский%27%2C+%27Среднее+неоконченное%27%2C+%27130500+-+ВТ+и+ПО%27%2C+%27Средняя%27%2C+%27%27%2C%27Программист%27%2C+%27Инженер+по+обслуживанию+лабораторной+информационной+системы%27%2C+%275+мес.%27%2C+%275+мес.%27%2C+%275+мес.%27%2C+%275+мес.%27%2C+%275+мес.%27%2C+%27Не+женат%27%2C+%27%27%2C+%27Номер+уд.личности+-+042423523%0D%0AВыдан+-+МВД+РК%0D%0AСерия+-+3495834%0D%0AИИН+-+000715550531%27%2C+%27с.+Астраханка%2C+Даулеткерея+6-2%27%2C%2787472414190%27%2C+%27%27%2C+%27%27%2C+%27%27%2C+%27%27%2C+%27%27%2C+%27%27%2C+%27%27%2C+%27%27%2C+%27%2B%2B%27%2C+%27%27%2C+%27%27%2C+%272020-04-09+00%3A27%3A10%27%2C+%272020-04-10+02%3A04%3A35%27%2C+%272%27%2C+%272%27%29%3E&worker_id=6 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [16/Apr/2020 01:05:34] "[33mGET /static/img/nav-expand.png HTTP/1.1[0m" 404 -

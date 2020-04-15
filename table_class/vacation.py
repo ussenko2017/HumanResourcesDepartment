@@ -42,17 +42,17 @@ class Vacation(Base):
 
     period = Column(String(200),)
     osnov = Column(String(200),)# Основание
-    kolvo_dney = Column(Integer(),)# кол-во рабочих дней
+    kolvo_dney = Column(String(100),)# кол-во рабочих дней
             #Дополнительный отпуск
     dop_1 = Column(String(100),)
     dop_2 = Column(String(100),)
     dop_3 = Column(String(100),)
     itog = Column(String(200),)
 
-    vsego_dney = Column(Integer())
+    vsego_dney = Column(String(100))
         #Дата
-    date_begin = Column(DateTime(), )  # Дата начала основного и дополнительного отпуска
-    date_end = Column(DateTime(), )  # Дата окончания основного и дополнительного отпуска
+    date_begin = Column(String(20), )  # Дата начала основного и дополнительного отпуска
+    date_end = Column(String(20), )  # Дата окончания основного и дополнительного отпуска
 
     date_create = Column(DateTime(), )
     date_edit = Column(DateTime(), )

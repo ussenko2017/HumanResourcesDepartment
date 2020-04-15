@@ -17,7 +17,7 @@
                   </li>
                     </ul>
                     <ul class="nav nav-tabs nav-justified">
-                    <li  class="active">
+                    <li  >
                     <a  href="{{ url_for('assignment_and_relocation',worker_id=worker.id) }}">Назначение и перемещение</a>
                   </li>
                     <li >
@@ -26,7 +26,7 @@
                         <li >
                     <a  href="{{ url_for('retraining',worker_id=worker.id) }}">Переподготовка</a>
                   </li>
-                    <li >
+                    <li class="active">
                     <a  href="{{ url_for('vacation',worker_id=worker.id) }}">Отпуска</a>
                   </li>
                      <li>
@@ -123,69 +123,76 @@
 
                     <h5></h5>
 <div class="content-panel" >
-                    <form action="{{ url_for('assignment_and_relocation_save') }}"  class="form-horizontal style-form" method="post">
+                    <form action="{{ url_for('vacation_save') }}"  class="form-horizontal style-form" method="post">
 
                         <div class="form-group">
-        <label class="control-label">Дата</label>
+                  <label class=" control-label">На какой период</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="period" value="" >
+                  </div>
+    </div>
+
+                        <div class="form-group">
+                  <label class=" control-label">Основание</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="osnov" value="" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">Кол-во рабочих дней</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="kolvo_dney" value="" >
+                  </div>
+    </div>
+            <h4>Дополнительный отпуск</h4>
+                          <div class="form-group">
+                  <label class=" control-label">ДОП 1</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="dop_1" value="" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">ДОП 2</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="dop_2" value="" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">ДОП 3</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="dop_3" value="" >
+                  </div>
+    </div>
+                         <div class="form-group">
+                  <label class=" control-label">Итого</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="itog" value="" >
+                  </div>
+    </div>
+
+                          <div class="form-group">
+                  <label class=" control-label">Всего кол-во дней отпуска</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="vsego_dney" value="" >
+                  </div>
+    </div>
+
+                        <h4>Дата</h4>
+                        <div class="form-group">
+        <label class="control-label">Дата начала основного и дополнительного отпуска</label>
                <div class="control-label">
                     <input class="form-control form-control-inline input-medium default-date-picker"
-                           size="16" type="date" name="date"  value="">
+                           size="16" type="date" name="date_begin"  value="">
+                  </div>
+        </div>
+  <div class="form-group">
+        <label class="control-label">Дата окончания основного и дополнительного отпуска</label>
+               <div class="control-label">
+                    <input class="form-control form-control-inline input-medium default-date-picker"
+                           size="16" type="date" name="date_end"  value="">
                   </div>
         </div>
 
-    <div class="form-group">
-                  <label class=" control-label">Цех, отдел, участок</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="otdel" value="" >
-                  </div>
-    </div>
-                        <div class="form-group">
-                  <label class=" control-label">Профессия, должность</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="prof" value="" >
-                  </div>
-    </div>
-                        <div class="form-group">
-                  <label class=" control-label">Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="sootvetst" value="" >
-                  </div>
-    </div>
-                        <div class="form-group">
-                  <label class=" control-label">Тарифный разрад</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="razrad" value="" >
-                  </div>
-    </div>
-
-
-                        <div class="form-group">
-                  <label class=" control-label">Условия труда</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="uslov_truda" value="" >
-                  </div>
-    </div>
-<h4>Основание</h4>
-                         <div class="form-group">
-                  <label class=" control-label">Наименование документа</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="osnov_doc" value="" >
-                  </div>
-    </div>
-                        <div class="form-group">
-        <label class="control-label">Дата</label>
-               <div class="control-label">
-                    <input class="form-control form-control-inline input-medium default-date-picker"
-                           size="16" type="date" name="osnov_date"  value="">
-                  </div>
-        </div>
-
-                         <div class="form-group">
-                  <label class=" control-label">Номер документа</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="nomer" value="" >
-                  </div>
-    </div>
                          <div class="form-group ">
                     <label for="agree" class="control-label col-lg-2 col-sm-3">Запись активна</label>
                     <div class="col-lg-10 col-sm-9">
@@ -219,18 +226,18 @@
                 <thead>
                   <tr>
                     <th><i class="fa fa-bullhorn"></i> №</th>
-                    <th class="hidden-phone"><i class="fa fa-question-circle"></i> Дата</th>
-                    <th><i class="fa fa-bookmark"></i> Цех, отдел, участок</th>
-                    <th><i class="fa fa-bookmark"></i> Профессия, должность</th>
-                    <th><i class="fa fa-bookmark"></i> Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)</th>
-                    <th><i class="fa fa-bookmark"></i> Тарифный разряд</th>
+
+                    <th><i class="fa fa-bookmark"></i> Основание</th>
+                    <th><i class="fa fa-bookmark"></i> Дата начала основного и дополнительного отпуска</th>
+                    <th><i class="fa fa-bookmark"></i> Дата окончания основного и дополнительного отпуска</th>
+
                     <th><i class=" fa fa-edit"></i> Активность</th>
                     <th>Редактирование</th>
                     <th>Удаление</th>
                   </tr>
                 </thead>
                 <tbody>
-                 {% for v in as_reloc %}
+                 {% for v in vacat %}
                  <div class="zatemnenie custom-box " id="zatemnenie{{ v.id }}" >
                     <div  id="okno" >
 
@@ -243,11 +250,11 @@
 
                     <form action="{{ url_for('delete') }}" method="post">
                         <input type="hidden" name="id" value="{{ v.id }}">
-                        <input type="hidden" name="redirect" value="assignment_and_relocation">
-                        <input type="hidden" name="tablename" value="assignment_and_relocation">
+                        <input type="hidden" name="redirect" value="vacation">
+                        <input type="hidden" name="tablename" value="vacation">
+
                         <input type="hidden" name="worker_id" value="{{ worker.id }}">
                         <button type="submit" class="btn btn-danger">Удалить</button>
-
                       </form>
 
                     <a class="close btn btn-primary" href="#">Отмена</a>
@@ -270,68 +277,76 @@
 
                     <h5></h5>
 <div class="content-panel">
-                    <form action="{{ url_for('assignment_and_relocation_save') }}" class="form-horizontal style-form" method="post">
+                    <form action="{{ url_for('vacation_save') }}" class="form-horizontal style-form" method="post">
 
                         <div class="form-group">
-        <label class="control-label">Дата</label>
+                  <label class=" control-label">На какой период</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="period" value="{{ v.period }}" >
+                  </div>
+    </div>
+
+                        <div class="form-group">
+                  <label class=" control-label">Основание</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="osnov" value="{{ v.osnov }}" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">Кол-во рабочих дней</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="kolvo_dney" value="{{ v.kolvo_dney }}" >
+                  </div>
+    </div>
+            <h4>Дополнительный отпуск</h4>
+                          <div class="form-group">
+                  <label class=" control-label">ДОП 1</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="dop_1" value="{{ v.dop_1 }}" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">ДОП 2</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="dop_2" value="{{ v.dop_2 }}" >
+                  </div>
+    </div>
+                        <div class="form-group">
+                  <label class=" control-label">ДОП 3</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="dop_3" value="{{ v.dop_3 }}" >
+                  </div>
+    </div>
+                         <div class="form-group">
+                  <label class=" control-label">Итого</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="itog" value="{{ v.itog }}" >
+                  </div>
+    </div>
+
+                          <div class="form-group">
+                  <label class=" control-label">Всего кол-во дней отпуска</label>
+                  <div class="">
+                    <input type="text" class="form-control" name="vsego_dney" value="{{ v.vsego_dney }}" >
+                  </div>
+    </div>
+
+                        <h4>Дата</h4>
+                        <div class="form-group">
+        <label class="control-label">Дата начала основного и дополнительного отпуска</label>
                <div class="control-label">
                     <input class="form-control form-control-inline input-medium default-date-picker"
-                           size="16" type="date" name="date"  value="{{ v.date }}">
+                           size="16" type="date" name="date_begin"  value="{{ v.date_begin }}">
+                  </div>
+        </div>
+  <div class="form-group">
+        <label class="control-label">Дата окончания основного и дополнительного отпуска</label>
+               <div class="control-label">
+                    <input class="form-control form-control-inline input-medium default-date-picker"
+                           size="16" type="date" name="date_end"  value="{{ v.date_end }}">
                   </div>
         </div>
 
-    <div class="form-group">
-                  <label class=" control-label">Цех, отдел, участок</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="otdel" value="{{ v.otdel }}" >
-                  </div>
-    </div>
-                        <div class="form-group">
-                  <label class=" control-label">Профессия, должность</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="prof" value="{{ v.prof }}" >
-                  </div>
-    </div>
-                        <div class="form-group">
-                  <label class=" control-label">Соответствие специальности по диплому(свидетельству) занимаемой должности(профессии) (да, нет)</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="sootvetst" value="{{ v.sootvetst }}" >
-                  </div>
-    </div>
-                        <div class="form-group">
-                  <label class=" control-label">Тарифный разрад</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="razrad" value="{{ v.razrad }}" >
-                  </div>
-    </div>
-
-                        <div class="form-group">
-                  <label class=" control-label">Условия труда</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="uslov_truda" value="{{ v.uslov_truda }}" >
-                  </div>
-    </div>
-<h4>Основание</h4>
-                         <div class="form-group">
-                  <label class=" control-label">Наименование документа</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="osnov_doc" value="{{ v.osnov_doc }}" >
-                  </div>
-    </div>
-                        <div class="form-group">
-        <label class="control-label">Дата</label>
-               <div class="control-label">
-                    <input class="form-control form-control-inline input-medium default-date-picker"
-                           size="16" type="date" name="osnov_date"  value="{{ v.osnov_date }}">
-                  </div>
-        </div>
-
-                         <div class="form-group">
-                  <label class=" control-label">Номер документа</label>
-                  <div class="">
-                    <input type="text" class="form-control" name="nomer" value="{{ v.nomer }}" >
-                  </div>
-    </div>
 
                          <div class="form-group ">
                     <label for="agree" class="control-label col-lg-2 col-sm-3">Запись активна</label>
@@ -383,11 +398,11 @@
                     <td>
                       <a href="basic_table.html#">{{ v.id }}</a>
                     </td>
-                    <td class="hidden-phone">{{ v.date }}</td>
-                    <td>{{ v.otdel }} </td>
-                    <td>{{ v.prof }} </td>
-                    <td>{{ v.sootvetst }} </td>
-                    <td>{{ v.razrad }} </td>
+
+                    <td>{{ v.osnov }} </td>
+                    <td>{{ v.date_begin }} </td>
+                    <td>{{ v.date_end }} </td>
+
                     <td>
                     {% if v.active %}
                     <span class="label label-success label-mini">Активен</span>

@@ -39,13 +39,13 @@ class Kvalif_up(Base):
 
     id = Column(Integer(), primary_key=True)
     worker_id = Column(Integer(), nullable=False)
-    date = Column(DateTime(),)#Дата
+    date = Column(String(20),)#Дата
     type_kvalif = Column(String(200),)# вид повышения квалификации
 
                 #Свидетельство
 
-    osnov_date = Column(DateTime(),)#дата свидетельства
-    nomer = Column(Integer())# Номер свидетельства
+    osnov_date = Column(String(20),)#дата свидетельства
+    nomer = Column(String(100))# Номер свидетельства
 
     date_create = Column(DateTime(), )
     date_edit = Column(DateTime(), )

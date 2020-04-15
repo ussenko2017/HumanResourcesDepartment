@@ -39,13 +39,13 @@ class Retraining(Base):
 
     id = Column(Integer(), primary_key=True)
     worker_id = Column(Integer(), nullable=False)
-    date = Column(DateTime(),)#Дата
+    date = Column(String(20),)#Дата
     special = Column(String(200),)# специальность, профессия
 
                 #Диплом
 
-    osnov_date = Column(DateTime(),)#дата свидетельства
-    nomer = Column(Integer())# Номер свидетельства
+    osnov_date = Column(String(20),)#дата свидетельства
+    nomer = Column(String(20))# Номер свидетельства
 
     date_create = Column(DateTime(), )
     date_edit = Column(DateTime(), )

@@ -17,14 +17,17 @@
                   </li>
                     </ul>
                     <ul class="nav nav-tabs nav-justified">
-                    <li >
+                    <li  >
                     <a  href="{{ url_for('assignment_and_relocation',worker_id=worker.id) }}">Назначение и перемещение</a>
                   </li>
                     <li >
-                    <a  href="{{ url_for('worker_list_edit',worker_id=worker.id) }}">Повышение квалификации</a>
+                    <a  href="{{ url_for('kvalif_up',worker_id=worker.id) }}">Повышение квалификации</a>
+                  </li>
+                        <li >
+                    <a  href="{{ url_for('retraining',worker_id=worker.id) }}">Переподготовка</a>
                   </li>
                     <li >
-                    <a  href="{{ url_for('worker_list_edit',worker_id=worker.id) }}">Отпуска</a>
+                    <a  href="{{ url_for('vacation',worker_id=worker.id) }}">Отпуска</a>
                   </li>
                      <li class="active">
                     <a  href="{{ url_for('vac_certification',worker_id=worker.id) }}">Аттестация</a>
@@ -59,7 +62,7 @@
       }
       #okno2 {
         width: 500px;
-        height: 150px;
+        height: 550px;
         text-align: center;
         padding: 15px;
 
@@ -73,7 +76,7 @@
       }
       #okno3 {
         width: 500px;
-        height: 150px;
+        height: 550px;
         text-align: center;
         padding: 15px;
 
@@ -180,6 +183,7 @@
                         <input type="hidden" name="id" value="{{ v.id }}">
                         <input type="hidden" name="redirect" value="vac_certification">
                         <input type="hidden" name="tablename" value="vac_certification">
+                        <input type="hidden" name="worker_id" value="{{ worker.id }}">
                         <button type="submit" class="btn btn-danger">Удалить</button>
                       </form>
 
