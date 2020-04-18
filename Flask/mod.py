@@ -1,3 +1,13 @@
+import datetime
+import os
+
+from Flask import app
+from table_class import user as clUser,worker as worker_py,kvalif_up as kvalif_up_py, retraining as retraining_py, \
+    vac_certification as vac_certification_py, vacation as vacation_py, assignment_and_relocation as assignment_and_relocation_py
+import docx
+from docxtpl import DocxTemplate
+workerlists_dir = 'Flask/static/files/workerlists/'
+
 def show_alert(alert_type,header, body):
     """
     def x():
@@ -20,15 +30,50 @@ def show_alert(alert_type,header, body):
            ''+body+'</div></div>'
     return html
 
-def test():
-    from docxtpl import DocxTemplate
 
-    doc = DocxTemplate("test.docx")
-    context = {'var_name': "HELLO WORLD!!!!!!!!!!!"}
+
+def genWorkerList(worker_id, session):
+    wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+    vac_cert = session.query(vac_certification_py.Vac_certification).filter_by(worker_id=worker_id).all()
+    doc = DocxTemplate("Flask/static/templates/workerlists.docx")
+    context = worker_py.worker_serializer(wor)
+    if wor.gender_id == 0:
+        context['gender_name'] = "Женский"
+    else:
+        context['gender_name'] = "Мужской"
+    if vac_cert != None:
+        context['vac_cert'] = vac_cert
+
+
     doc.render(context)
-    doc.save("generated.docx")
+    name = str(wor.id)+" - "+str(datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")) +".docx"
+    path = workerlists_dir + name
+    doc.save(path)
 
-    import docx
+
+
+    """
+    docOnTable = docx.Document(path)
+    table = doc.add_table(rows=3, cols=3)
+    #table = docOnTable.table[0]
+    for row in range(3):
+        for col in range(3):
+            # получаем ячейку таблицы
+            cell = table.cell(row, col)
+            # записываем в ячейку данные
+            cell.text = str(row + 1) + str(col + 1)
+
+    docOnTable.save(path)
+"""
+
+    session.close()
+    return name
+
+def test():
+
+
+
+
 
     doc = docx.Document('generated.docx')
 

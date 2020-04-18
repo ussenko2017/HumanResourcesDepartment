@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-
+import os
 from datetime import datetime
 
 import mysql
 import sqlalchemy
-from flask import render_template, jsonify,request
+from flask import render_template, jsonify, request, send_from_directory
 from sqlalchemy.exc import SQLAlchemyError
+from werkzeug.utils import secure_filename
 
 from Flask import app
 import json
@@ -21,7 +22,8 @@ import flask_login
 from config import SQLALCHEMY_DB_URI, DEBUG
 from flask import render_template, g
 import logging
-
+workerlists_dir = "static/files/workerlists/"
+#app.config['UPLOAD_FOLDER'] = workerlists_dir
 
 
 logging.basicConfig(filename="log.txt", level = logging.DEBUG)
@@ -950,3 +952,10 @@ def vacation_save():
     return flask.redirect(flask.url_for('vacation', alert_html=alert_html, worker_id=worker_id))
 
 
+@app.route('/gen-worker-list', methods=['GET', 'POST'])
+def genWorkerList():
+    session = Session()
+    worker_id = flask.request.values['worker_id']
+    file_name = Flask.mod.genWorkerList(worker_id, session)
+
+    return flask.redirect(workerlists_dir + file_name)
