@@ -45,6 +45,7 @@ def genWorkerList(worker_id, session):
         context['vac_cert'] = vac_cert
 
 
+
     doc.render(context)
     name = str(wor.id)+" - "+str(datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")) +".docx"
     path = workerlists_dir + name
