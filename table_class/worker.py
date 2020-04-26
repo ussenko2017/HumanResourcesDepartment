@@ -94,9 +94,14 @@ class Worker(Base):
     8. Дополнительные сведения
     """
 
+
     info = Column(String(5000), )# Доп. сведения
     dismissal = Column(String(200), )# Дата и причина увольнения
     order = Column(String(200), )#Приказ
+
+
+
+    
 
     def __init__(self, lastname, firstname , patr, gender_id, birthday,email, image_name, active,birthplace,
                  nation, education, spec_diplom, kvalif_diplom, academ_title, profession, position,

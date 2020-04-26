@@ -35,6 +35,10 @@ def show_alert(alert_type,header, body):
 def genWorkerList(worker_id, session):
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     vac_cert = session.query(vac_certification_py.Vac_certification).filter_by(worker_id=worker_id).all()
+    vacat = session.query(vacation_py.Vacation).filter_by(worker_id=worker_id).all()
+    ret = session.query(retraining_py.Retraining).filter_by(worker_id=worker_id).all()
+    kvalif = session.query(kvalif_up_py.Kvalif_up).filter_by(worker_id=worker_id).all()
+    as_reloc = session.query(assignment_and_relocation_py.Assignment_and_relocation).filter_by(worker_id=worker_id).all()
     doc = DocxTemplate("Flask/static/templates/workerlists.docx")
     context = worker_py.worker_serializer(wor)
     if wor.gender_id == 0:
@@ -43,8 +47,14 @@ def genWorkerList(worker_id, session):
         context['gender_name'] = "Мужской"
     if vac_cert != None:
         context['vac_cert'] = vac_cert
-
-
+    if vacat != None:
+        context['vacat'] = vacat
+    if ret != None:
+        context['ret'] = ret
+    if kvalif != None:
+        context['kvalif'] = kvalif
+    if as_reloc != None:
+        context['as_reloc'] = as_reloc
 
     doc.render(context)
     name = str(wor.id)+" - "+str(datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")) +".docx"
