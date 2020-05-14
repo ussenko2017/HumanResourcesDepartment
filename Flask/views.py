@@ -23,6 +23,7 @@ from config import SQLALCHEMY_DB_URI, DEBUG
 from flask import render_template, g
 import logging
 workerlists_dir = "static/files/workerlists/"
+personalList_dir = "static/files/personalLists/"
 #app.config['UPLOAD_FOLDER'] = workerlists_dir
 
 
@@ -333,7 +334,8 @@ def worker_edit():
     session = Session()
     id = flask.request.values['id']
     wor = session.query(worker_py.Worker).filter_by(id=id).first()
-
+    wor.creator = session.query(clUser.User).filter_by(id=wor.creator_id).first()
+    wor.editor = session.query(clUser.User).filter_by(id=wor.editor_id).first()
     session.close()
 
     return render_template('add_edit_table/worker.html', worker=wor, main_header=main_header, type_str='edit',alert_html=alert_html)
@@ -353,6 +355,8 @@ def worker_card_edit():
     session = Session()
     id = flask.request.values['id']
     wor = session.query(worker_py.Worker).filter_by(id=id).first()
+    wor.creator = session.query(clUser.User).filter_by(id=wor.creator_id).first()
+    wor.editor = session.query(clUser.User).filter_by(id=wor.editor_id).first()
     session.close()
 
     return render_template('add_edit_table/worker-card.html', worker=wor,  main_header=main_header,
@@ -558,11 +562,17 @@ def vac_certification():
 
     main_header = 'Аттестации'
     session = Session()
+    vacs = []
     vac_cert = session.query(vac_certification_py.Vac_certification).filter_by(worker_id=worker_id).all()
+    for ar in vac_cert:
+        ar.creator = session.query(clUser.User).filter_by(id=ar.creator_id).first()
+        ar.editor = session.query(clUser.User).filter_by(id=ar.editor_id).first()
+        vacs.append(ar)
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+
     session.close()
 
-    return render_template('add_edit_table/vac_certification.html', vac_cert=vac_cert,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/vac_certification.html', vac_cert=vacs,worker=wor ,main_header=main_header, alert_html=alert_html)
 
 
 
@@ -628,11 +638,16 @@ def assignment_and_relocation():
 
     main_header = 'Назначение и перемещение'
     session = Session()
+    ars = []
     as_reloc = session.query(assignment_and_relocation_py.Assignment_and_relocation).filter_by(worker_id=worker_id).all()
+    for ar in as_reloc:
+        ar.creator = session.query(clUser.User).filter_by(id=ar.creator_id).first()
+        ar.editor = session.query(clUser.User).filter_by(id=ar.editor_id).first()
+        ars.append(ar)
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     session.close()
 
-    return render_template('add_edit_table/assignment_and_relocation.html', as_reloc=as_reloc,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/assignment_and_relocation.html', as_reloc=ars,worker=wor ,main_header=main_header, alert_html=alert_html)
 
 
 
@@ -716,11 +731,16 @@ def kvalif_up():
 
     main_header = 'Повышение квалификации'
     session = Session()
+    kvs = []
     kvalif = session.query(kvalif_up_py.Kvalif_up).filter_by(worker_id=worker_id).all()
+    for ar in kvalif:
+        ar.creator = session.query(clUser.User).filter_by(id=ar.creator_id).first()
+        ar.editor = session.query(clUser.User).filter_by(id=ar.editor_id).first()
+        kvs.append(ar)
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     session.close()
 
-    return render_template('add_edit_table/kvalif_up.html', kvalif=kvalif,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/kvalif_up.html', kvalif=kvs,worker=wor ,main_header=main_header, alert_html=alert_html)
 
 
 
@@ -796,11 +816,16 @@ def retraining():
 
     main_header = 'Переподготовка'
     session = Session()
+    rets = []
     ret = session.query(retraining_py.Retraining).filter_by(worker_id=worker_id).all()
+    for ar in ret:
+        ar.creator = session.query(clUser.User).filter_by(id=ar.creator_id).first()
+        ar.editor = session.query(clUser.User).filter_by(id=ar.editor_id).first()
+        rets.append(ar)
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     session.close()
 
-    return render_template('add_edit_table/retraining.html', ret=ret,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/retraining.html', ret=rets,worker=wor ,main_header=main_header, alert_html=alert_html)
 
 
 
@@ -875,11 +900,16 @@ def vacation():
 
     main_header = 'Отпуска'
     session = Session()
+    vs = []
     vacat = session.query(vacation_py.Vacation).filter_by(worker_id=worker_id).all()
+    for ar in vacat:
+        ar.creator = session.query(clUser.User).filter_by(id=ar.creator_id).first()
+        ar.editor = session.query(clUser.User).filter_by(id=ar.editor_id).first()
+        vs.append(ar)
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     session.close()
 
-    return render_template('add_edit_table/vacation.html', vacat=vacat,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/vacation.html', vacat=vs,worker=wor ,main_header=main_header, alert_html=alert_html)
 
 
 
@@ -959,3 +989,11 @@ def genWorkerList():
     file_name = Flask.mod.genWorkerList(worker_id, session)
 
     return flask.redirect(workerlists_dir + file_name)
+
+@app.route('/gen-personal-list', methods=['GET', 'POST'])
+def genPersonalList():
+    session = Session()
+    worker_id = flask.request.values['worker_id']
+    file_name = Flask.mod.genPersonalList(worker_id, session)
+
+    return flask.redirect(personalList_dir + file_name)

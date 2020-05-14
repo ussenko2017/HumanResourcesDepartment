@@ -12,9 +12,7 @@
                   <li class="active">
                     <a  href="{{ url_for('worker_card_edit',id=worker.id) }}">Личная карточка</a>
                   </li>
-                  <li >
-                    <a  href="{{ url_for('worker_list_edit',id=worker.id) }}">Личный листок по учету кадров</a>
-                  </li>
+
                     </ul>
                      <ul class="nav nav-tabs nav-justified">
                     <li  >
@@ -37,7 +35,9 @@
              <li  >
                    <a  target="_blank" href="{{ url_for('genWorkerList',worker_id=worker.id) }}">Сформировать "Личную карточку" в формате "docx"</a>
                   </li>
-
+                <li >
+                    <a  target="_blank" href="{{ url_for('genPersonalList',worker_id=worker.id) }}">Сформировать "Личный листок по учету кадров" в формате "docx"</a>
+                  </li>
         </ul>
               </div>
 
@@ -233,6 +233,12 @@
 
 <button type="submit" class="btn btn-theme">Сохранить</button>
 
+<hr>
+                    <blockquote>
+                        Создано: {{ worker.creator.lastname }} {{ worker.creator.firstname }} {{ worker.creator.patr }} | {{ worker.date_create }}
+                        <br>
+                        Изменено:  {{ worker.editor.lastname }} {{ worker.editor.firstname }} {{ worker.editor.patr }} | {{ worker.date_edit }}
+                    </blockquote>
 
               </form>
             </div>

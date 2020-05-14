@@ -12,9 +12,7 @@
                   <li >
                     <a  href="{{ url_for('worker_card_edit',id=worker.id) }}">Личная карточка</a>
                   </li>
-                  <li >
-                    <a  href="{{ url_for('worker_list_edit',id=worker.id) }}">Личный листок по учету кадров</a>
-                  </li>
+
                     </ul>
                     <ul class="nav nav-tabs nav-justified">
                     <li  >
@@ -33,7 +31,14 @@
                     <a  href="{{ url_for('vac_certification',worker_id=worker.id) }}">Аттестация</a>
                   </li>
                     </ul>
-
+ <ul class="nav nav-tabs nav-justified">
+             <li  >
+                   <a  target="_blank" href="{{ url_for('genWorkerList',worker_id=worker.id) }}">Сформировать "Личную карточку" в формате "docx"</a>
+                  </li>
+                <li >
+                    <a  target="_blank" href="{{ url_for('genPersonalList',worker_id=worker.id) }}">Сформировать "Личный листок по учету кадров" в формате "docx"</a>
+                  </li>
+        </ul>
               </div>
 
           <style>
@@ -287,7 +292,12 @@
 
 <button type="submit" class="btn btn-theme">Сохранить</button>
 <a class="close btn btn-primary" href="#">Отмена</a>
-
+ <hr>
+                    <blockquote>
+                        Создано: {{ v.creator.lastname }} {{ v.creator.firstname }} {{ v.creator.patr }} | {{ v.date_create }}
+                        <br>
+                        Изменено:  {{ v.editor.lastname }} {{ v.editor.firstname }} {{ v.editor.patr }} | {{ v.date_edit }}
+                    </blockquote>
 </form>
 
 

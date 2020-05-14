@@ -7,6 +7,7 @@ from table_class import user as clUser,worker as worker_py,kvalif_up as kvalif_u
 import docx
 from docxtpl import DocxTemplate
 workerlists_dir = 'Flask/static/files/workerlists/'
+personalList_dir = 'Flask/static/files/personalLists/'
 
 def show_alert(alert_type,header, body):
     """
@@ -77,6 +78,24 @@ def genWorkerList(worker_id, session):
     docOnTable.save(path)
 """
 
+    session.close()
+    return name
+
+def genPersonalList(worker_id, session):
+    wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
+
+    doc = DocxTemplate("Flask/static/templates/personalList.docx")
+    context = worker_py.worker_serializer(wor)
+    if wor.gender_id == 0:
+        context['gender_name'] = "Женский"
+    else:
+        context['gender_name'] = "Мужской"
+
+
+    doc.render(context)
+    name = str(wor.id)+" - "+str(datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")) +".docx"
+    path = personalList_dir + name
+    doc.save(path)
     session.close()
     return name
 
