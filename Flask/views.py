@@ -14,7 +14,8 @@ import random
 import requests
 import Flask.mod
 from table_class import user as clUser,worker as worker_py,kvalif_up as kvalif_up_py, retraining as retraining_py, \
-    vac_certification as vac_certification_py, vacation as vacation_py, assignment_and_relocation as assignment_and_relocation_py
+    vac_certification as vac_certification_py, vacation as vacation_py, \
+    assignment_and_relocation as assignment_and_relocation_py, staff_list as staff_list_py
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine, DateTime, inspect
 import flask
@@ -22,23 +23,20 @@ import flask_login
 from config import SQLALCHEMY_DB_URI, DEBUG
 from flask import render_template, g
 import logging
+
 workerlists_dir = "static/files/workerlists/"
 personalList_dir = "static/files/personalLists/"
-#app.config['UPLOAD_FOLDER'] = workerlists_dir
+staffList_dir = "static/files/staffLists/"
+UPLOADED_PHOTOS_DEST_USER = 'static/files/photo/user'
+UPLOADED_PHOTOS_DEST_WORKER = 'static/files/photo/worker'
 
 
 logging.basicConfig(filename="log.txt", level = logging.DEBUG)
 logging.info("Hello views!")
 
-#uploads_block_begin
-#from flask_uploads import UploadSet, configure_uploads, IMAGES,UploadNotAllowed
-UPLOADED_PHOTOS_DEST_USER = '/files/photo/user'
-UPLOADED_PHOTOS_DEST_WORKER = '/files/photo/worker'
+
 app.config.from_object(__name__)
-app.config.from_envvar('PHOTOLOG_SETTINGS', silent=True)
-#uploaded_photos = UploadSet('photos', IMAGES)
-#configure_uploads(app, uploaded_photos)
-#uploads_block_end
+
 
 #login_init
 login_manager = flask_login.LoginManager()
@@ -248,10 +246,15 @@ def user_edit():
     session = Session()
     id = flask.request.values['id']
     user_cl = session.query(clUser.User).filter_by(id=id).first()
-
+    path = UPLOADED_PHOTOS_DEST_USER + "/" + id+".png"
+    try:
+        f = open(path)
+        f.close()
+    except FileNotFoundError:
+        path = "http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image"
     session.close()
 
-    return render_template('add_edit_table/user.html', user_cl=user_cl, header_text=header_text, main_header=main_header, type_str='edit')
+    return render_template('add_edit_table/user.html', path = path, user_cl=user_cl, header_text=header_text, main_header=main_header, type_str='edit')
 
 @app.route('/user-save', methods=['GET', 'POST'])
 def user_save():
@@ -284,11 +287,16 @@ def user_save():
         user_cl.password = flask.request.values['password']
         user_cl.active = active
 
+
+
     session.add(user_cl)
     try:
+
+
         session.commit()
         alert_html = Flask.mod.show_alert('success', 'Отлично! ', 'Пользовательские данные сохранены')
-    except:
+    except Exception as e:
+        logging.error(e)
         alert_html = Flask.mod.show_alert('danger', 'Ошибка ', 'Пользовательские данные не были сохранены')
 
 
@@ -997,3 +1005,152 @@ def genPersonalList():
     file_name = Flask.mod.genPersonalList(worker_id, session)
 
     return flask.redirect(personalList_dir + file_name)
+
+@app.route('/gen-staff-list', methods=['GET', 'POST'])
+def genStaffList():
+    session = Session()
+    file_name = Flask.mod.genStaffList(session)
+
+    return flask.redirect(staffList_dir + file_name)
+
+
+
+@app.route('/staff-list', methods=['GET', 'POST'])
+def staff_list():
+    alert_html = request.args.get('alert_html')
+
+    if alert_html is None:
+        alert_html = ''
+
+    main_header = 'Штатное расписание'
+    session = Session()
+    ars = []
+    stf_list = session.query(staff_list_py.Staff_list).all()
+    for ar in stf_list:
+        ar.creator = session.query(clUser.User).filter_by(id=ar.creator_id).first()
+        ar.editor = session.query(clUser.User).filter_by(id=ar.editor_id).first()
+        ars.append(ar)
+
+    session.close()
+
+    return render_template('add_edit_table/staff_list.html', staff_lists=ars,main_header=main_header, alert_html=alert_html)
+
+
+
+@app.route('/staff-list-save', methods=['GET', 'POST'])
+def staff_list_save():
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные сохранены')
+    active = None
+    session = Session()
+    try:
+        if flask.request.values['active'] == 'on':
+            active = True
+    except:
+        active = False
+    creator_id = flask_login.current_user.num
+    date_create = datetime.now()
+    editor_id = creator_id
+    date_edit = date_create
+
+    kol_vo = flask.request.values['kol_vo']
+    oklad = flask.request.values['oklad']
+    nadbavka_1 = flask.request.values['nadbavka_1']
+    nadbavka_2 = flask.request.values['nadbavka_2']
+    nadbavka_3 = flask.request.values['nadbavka_3']
+    fond = flask.request.values['fond']
+    if Flask.mod.isint(kol_vo) == False:
+        kol_vo = 0
+    if Flask.mod.isint(oklad) == False:
+        oklad = 0
+    if Flask.mod.isint(nadbavka_1) == False:
+        nadbavka_1 = 0
+    if Flask.mod.isint(nadbavka_2) == False:
+        nadbavka_2 = 0
+    if Flask.mod.isint(nadbavka_3) == False:
+        nadbavka_3 = 0
+    if Flask.mod.isint(fond) == False:
+        fond = 0
+
+    if flask.request.values['id'] == 'add':
+        stf_list = staff_list_py.Staff_list(name = flask.request.values['name'],
+        dolzh = flask.request.values['dolzh'],
+        kol_vo = kol_vo,
+        oklad = oklad,
+        nadbavka_1 = nadbavka_1,
+        nadbavka_2 = nadbavka_2,
+        nadbavka_3 = nadbavka_3,
+        fond = fond,
+        comment = flask.request.values['comment'],
+                              creator_id=creator_id,
+                              date_create=date_create,
+                              date_edit=date_edit,
+                              editor_id=editor_id,
+                              active=active)
+
+    else:
+        id = flask.request.values['id']
+        stf_list = session.query(staff_list_py.Staff_list).filter_by(id=id).first()
+
+        stf_list.name = flask.request.values['name']#наименование
+        stf_list.dolzh = flask.request.values['dolzh']#должность
+        stf_list.kol_vo = kol_vo #количество штатных единиц
+        stf_list.oklad = oklad #оклад, тарифная ставка(тенге)
+        stf_list.nadbavka_1 = nadbavka_1 #надбавка(тенге)
+        stf_list.nadbavka_2 = nadbavka_2 #надбавка(тенге)
+        stf_list.nadbavka_3 = nadbavka_3 #надбавка(тенге)
+        stf_list.fond = fond  ##Месячный фонд(тенге)
+        stf_list.comment = flask.request.values['comment']  #Примечание
+
+
+
+        stf_list.active = active
+
+        stf_list.date_edit = date_edit
+        stf_list.editor_id = editor_id
+
+    try:
+        session.add(stf_list)
+        session.commit()
+    except Exception as e:
+        logging.error(str(e))
+        alert_html = Flask.mod.show_alert('danger', 'Ошибка! ', ' Не удалось обработать запрос с ошибкой: ' + str(e))
+
+    session.close()
+
+    return flask.redirect(flask.url_for('staff_list', alert_html=alert_html))
+
+
+
+
+
+
+
+
+@app.route('/upload-user-pic', methods=['GET', 'POST'])
+def upload_user_pic():
+    if request.method == 'POST':
+        file = flask.request.files['file']
+        if file:
+                    user_id = flask.request.values['id']
+                    file.save(UPLOADED_PHOTOS_DEST_USER+"/"+ user_id+".png")
+                    return flask.redirect(flask.url_for('user_edit',id=user_id))
+
+app.config['UPLOAD_FOLDER'] = UPLOADED_PHOTOS_DEST_USER
+@app.route('/upl', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and Flask.mod.allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(app.config['UPLOAD_FOLDER'] + "1.png")
+            return flask.redirect(flask.url_for('uploaded_file', filename=filename))
+    return '''
+<!doctype html>
+<title>Загрузить новый файл</title>
+<h1>Загрузить новый файл</h1>
+<form action="/upl" method=post enctype=multipart/form-data>
+  <p><input type=file name=file>
+    <input type=submit value="Загрузить">
+</form>
+
+'''

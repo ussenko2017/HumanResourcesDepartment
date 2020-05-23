@@ -3,11 +3,16 @@ import os
 
 from Flask import app
 from table_class import user as clUser,worker as worker_py,kvalif_up as kvalif_up_py, retraining as retraining_py, \
-    vac_certification as vac_certification_py, vacation as vacation_py, assignment_and_relocation as assignment_and_relocation_py
+    vac_certification as vac_certification_py, vacation as vacation_py, \
+    assignment_and_relocation as assignment_and_relocation_py, staff_list as staff_list_py
 import docx
 from docxtpl import DocxTemplate
 workerlists_dir = 'Flask/static/files/workerlists/'
 personalList_dir = 'Flask/static/files/personalLists/'
+staffList_dir = 'Flask/static/files/staffLists/'
+
+
+ALLOWED_EXTENSIONS = {'png'}
 
 def show_alert(alert_type,header, body):
     """
@@ -99,6 +104,41 @@ def genPersonalList(worker_id, session):
     session.close()
     return name
 
+def genStaffList(session):
+    stf = session.query(staff_list_py.Staff_list).all()
+    doc = DocxTemplate("Flask/static/templates/staffList.docx")
+    context = {}
+    context['staff_list'] = stf
+    context['day'] = datetime.date.day
+    context['month'] = datetime.date.month
+    context['year'] = datetime.date.year
+
+    sum_kol_vo = session.execute('select sum(kol_vo) as sum from staff_list').first()
+    context['sum_kol_vo'] = sum_kol_vo[0]
+    fond = session.execute('select sum(fond) as sum from staff_list').first()
+    context['sum_fond'] = fond[0]
+
+    doc.render(context)
+    name = "Штатное расписание - "+str(datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")) +".docx"
+    path = staffList_dir + name
+    doc.save(path)
+    session.close()
+    return name
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+
+def isint(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
 def test():
 
 
@@ -120,3 +160,4 @@ def test():
             cell.text = str(row + 1) + str(col + 1)
 
     doc.save('generated.docx')
+
