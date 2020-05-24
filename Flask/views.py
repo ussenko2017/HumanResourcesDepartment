@@ -15,7 +15,7 @@ import requests
 import Flask.mod
 from table_class import user as clUser,worker as worker_py,kvalif_up as kvalif_up_py, retraining as retraining_py, \
     vac_certification as vac_certification_py, vacation as vacation_py, \
-    assignment_and_relocation as assignment_and_relocation_py, staff_list as staff_list_py
+    assignment_and_relocation as assignment_and_relocation_py, staff_list as staff_list_py, notes as notes_py
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine, DateTime, inspect
 import flask
@@ -27,9 +27,9 @@ import logging
 workerlists_dir = "static/files/workerlists/"
 personalList_dir = "static/files/personalLists/"
 staffList_dir = "static/files/staffLists/"
-UPLOADED_PHOTOS_DEST_USER = 'static/files/photo/user'
-UPLOADED_PHOTOS_DEST_WORKER = 'static/files/photo/worker'
-
+UPLOADED_PHOTOS_DEST_USER = 'Flask/static/files/photo/user/'
+UPLOADED_PHOTOS_DEST_WORKER = 'Flask/static/files/photo/worker/'
+app.config['UPLOAD_FOLDER'] = UPLOADED_PHOTOS_DEST_USER
 
 logging.basicConfig(filename="log.txt", level = logging.DEBUG)
 logging.info("Hello views!")
@@ -115,7 +115,17 @@ def request_loader(request):
 def home():
     main_header = 'Главная'
     session = Session()
-
+    today = datetime.today()
+    today = today.strftime("%Y-%m-%d")
+    workers_count = session.execute('select count(id) from worker').first()[0]
+    sql = "SELECT count(worker_id) FROM vacation inner join worker on worker.id = vacation.worker_id where "+"'"+today+"'"+  " between vacation.date_begin and vacation.date_end"
+    vac_count = session.execute(sql).first()[0]
+    proc_vac = (vac_count / workers_count) * 100
+    proc_workers = 100 - proc_vac
+    proc_vac = round(proc_vac, 1)
+    proc_workers = round(proc_workers, 1)
+    logging.error("Vac_count: " + str(vac_count))
+    logging.error("Vac_sql: " + sql)
     alert_html = request.args.get('alert_html')
     if alert_html is None:
         alert_html = ''
@@ -126,9 +136,30 @@ def home():
     except:
         user = 'Гость'
         return flask.redirect(flask.url_for('login_form'))
+    try:
+        w = Flask.mod.getWeather()
+    except:
+        w = None
+
+    import locale
+    locale.setlocale(locale.LC_ALL, "")
+
+    now = datetime.now()
+    today = now.strftime("%A, %d. %B %Y %I:%M%p")
+    time_now = now.strftime("%I:%M%p")
+
+    arr_notes = []
+    notes = session.execute('select * from notes inner join `user` on notes.creator_id = `user`.id')
+    for n in notes:
+        arr_notes.append(n)
+
+    arr_notes.reverse()
+
     session.close()
 
-    return render_template('index.html',  user=user, alert_html=alert_html, main_header=main_header)
+    return render_template('index.html',w = w,notes = arr_notes,vac_count =vac_count, workers_count=workers_count,
+                            proc_vac=proc_vac, proc_workers=proc_workers,
+                           today=today,time_now=time_now, user=user, alert_html=alert_html, main_header=main_header)
 
 
 @app.route('/login_form', methods=['GET', 'POST'])
@@ -246,7 +277,7 @@ def user_edit():
     session = Session()
     id = flask.request.values['id']
     user_cl = session.query(clUser.User).filter_by(id=id).first()
-    path = UPLOADED_PHOTOS_DEST_USER + "/" + id+".png"
+    path = app.config['UPLOAD_FOLDER'] + str(id)+".png"
     try:
         f = open(path)
         f.close()
@@ -1122,26 +1153,68 @@ def staff_list_save():
 
 
 
+@app.route('/notes-save', methods=['GET', 'POST'])
+def notes_save():
+    alert_html = Flask.mod.show_alert('success', 'Отлично! ', ' Данные сохранены')
+    active = None
+    session = Session()
+    try:
+        if flask.request.values['active'] == 'on':
+            active = True
+    except:
+        active = False
+    creator_id = flask_login.current_user.num
+    date_create = datetime.now()
+    editor_id = creator_id
+    date_edit = date_create
+    text = flask.request.values['text']
+    ret = ''
+
+    if flask.request.values['id'] == 'add':
+        ret = notes_py.Notes(text=text,
+                              creator_id=creator_id,
+                              date_create=date_create,
+                              date_edit=date_edit,
+                              editor_id=editor_id,
+                              active=active)
+
+
+
+    try:
+        session.add(ret)
+        session.commit()
+    except Exception as e:
+        logging.error(str(e))
+        alert_html = Flask.mod.show_alert('danger', 'Ошибка! ', ' Не удалось обработать запрос с ошибкой: ' + str(e))
+
+    session.close()
+
+    return flask.redirect(flask.url_for('home', alert_html=alert_html))
+
+
+
 
 
 
 
 @app.route('/upload-user-pic', methods=['GET', 'POST'])
 def upload_user_pic():
-    if request.method == 'POST':
-        file = flask.request.files['file']
-        if file:
-                    user_id = flask.request.values['id']
-                    file.save(UPLOADED_PHOTOS_DEST_USER+"/"+ user_id+".png")
-                    return flask.redirect(flask.url_for('user_edit',id=user_id))
 
-app.config['UPLOAD_FOLDER'] = UPLOADED_PHOTOS_DEST_USER
+        user_id = flask.request.values['id']
+        file = flask.request.files['file']
+        if file and Flask.mod.allowed_file(file.filename):
+            filename = app.config['UPLOAD_FOLDER'] + str(user_id)+".png"
+            file.save(filename)
+            return flask.redirect(flask.url_for('user_edit',id=user_id))
+
+
 @app.route('/upl', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+
         file = request.files['file']
         if file and Flask.mod.allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = file.filename
             file.save(app.config['UPLOAD_FOLDER'] + "1.png")
             return flask.redirect(flask.url_for('uploaded_file', filename=filename))
     return '''

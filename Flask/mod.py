@@ -1,5 +1,6 @@
 import datetime
 import os
+import pyowm
 
 from Flask import app
 from table_class import user as clUser,worker as worker_py,kvalif_up as kvalif_up_py, retraining as retraining_py, \
@@ -109,9 +110,14 @@ def genStaffList(session):
     doc = DocxTemplate("Flask/static/templates/staffList.docx")
     context = {}
     context['staff_list'] = stf
-    context['day'] = datetime.date.day
-    context['month'] = datetime.date.month
-    context['year'] = datetime.date.year
+    import locale
+    locale.setlocale(locale.LC_ALL, "")
+
+    now = datetime.datetime.now()
+
+    context['day'] = datetime.datetime.today().day
+    context['month'] = now.strftime("%B")
+    context['year'] =  datetime.datetime.today().year
 
     sum_kol_vo = session.execute('select sum(kol_vo) as sum from staff_list').first()
     context['sum_kol_vo'] = sum_kol_vo[0]
@@ -125,6 +131,30 @@ def genStaffList(session):
     session.close()
     return name
 
+def getWeather():
+    apiKey = "12bf12b5303397b18dce8a41f3a72b1d"
+    import pyowm
+
+    owm = pyowm.OWM(apiKey, language = "RU")  # You MUST provide a valid API key
+
+    # Have a pro subscription? Then use:
+    # owm = pyowm.OWM(API_key='your-API-key', subscription_type='pro')
+
+    # Search for current weather in London (Great Britain)
+    observation = owm.weather_at_place('Nur-Sultan,KZ')
+    w = observation.get_weather()
+    print(w)  # <Weather - reference time=2013-12-18 09:20,
+    # status=Clouds>
+
+    # Weather details
+    w.get_wind()  # {'speed': 4.6, 'deg': 330}
+    w.get_humidity()  # 87
+    w.get_temperature('celsius')  # {'temp_max': 10.5, 'temp': 9.7, 'temp_min': 9.0}
+
+    # Search current weather observations in the surroundings of
+    # lat=22.57W, lon=43.12S (Rio de Janeiro, BR)
+    observation_list = owm.weather_around_coords(-22.57, -43.12)
+    return  w
 
 def allowed_file(filename):
     return '.' in filename and \

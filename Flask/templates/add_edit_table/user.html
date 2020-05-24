@@ -130,14 +130,13 @@
 
 <button type="submit" class="btn btn-theme">Сохранить</button>
 
+<form action="/upload-user-pic" method=post enctype=multipart/form-data>
+  <p><input type=file name=file>
+<input type="hidden"  value="{{ user_cl.id }}" name="id">
+    <input type=submit value="Загрузить">
+</form>
+<img src="static/files/photo/user/{{ user_cl.id }}.png" alt="">
 
-
-    <form action="{{ url_for('upload_user_pic') }}" method="post" enctype=multipart/form-data>
-      <p><input type=file name=file>
-          <input type="hidden" name="id" value="{{ user_cl.id }}">
-         <input type=submit value=Upload>
-
-    </form>
 
               </form>
             </div>
