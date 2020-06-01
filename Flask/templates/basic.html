@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+  <meta content="no-cache" http-equiv="Cache-Control">
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
@@ -248,7 +250,7 @@
       <div id="sidebar" class="nav-collapse ">
         <!-- sidebar menu start-->
         <ul class="sidebar-menu" id="nav-accordion">
-          <p class="centered"><a href="{{ url_for('profile') }}"><img src="static/img/ui-sam.jpg" class="img-circle" width="80"></a></p>
+          <p class="centered"><a href="{{ url_for('profile') }}"><img src="static/files/photo/user/{{ current_user.num }}.png?salt={{ img_count }}" class="img-circle" width="80"></a></p>
           <h5 class="centered">{{ current_user.nickname }}</h5>
           <li class="mt">
             <a class="active" href="{{ url_for('home') }}">

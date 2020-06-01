@@ -8,8 +8,9 @@ from arrested import (
 )
 from config import SQLALCHEMY_DB_URI
 
+from config import DEBUG
 
-engine = create_engine(SQLALCHEMY_DB_URI, echo=True)
+engine = create_engine(SQLALCHEMY_DB_URI, echo=DEBUG)
 metadata = MetaData()
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -297,3 +298,4 @@ class WorkerObjectEndpoint(Endpoint, GetObjectMixin,
         session.commit()
 
 Base.metadata.create_all(engine)
+session.close()

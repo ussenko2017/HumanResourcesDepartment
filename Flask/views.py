@@ -31,9 +31,9 @@ UPLOADED_PHOTOS_DEST_USER = 'Flask/static/files/photo/user/'
 UPLOADED_PHOTOS_DEST_WORKER = 'Flask/static/files/photo/worker/'
 app.config['UPLOAD_FOLDER'] = UPLOADED_PHOTOS_DEST_USER
 
-logging.basicConfig(filename="log.txt", level = logging.DEBUG)
+logging.basicConfig(filename="log.txt", level = logging.ERROR)
 logging.info("Hello views!")
-
+app.config['img_count'] = 0
 
 app.config.from_object(__name__)
 
@@ -159,7 +159,7 @@ def home():
 
     return render_template('index.html',w = w,notes = arr_notes,vac_count =vac_count, workers_count=workers_count,
                             proc_vac=proc_vac, proc_workers=proc_workers,
-                           today=today,time_now=time_now, user=user, alert_html=alert_html, main_header=main_header)
+                           today=today,time_now=time_now, user=user, alert_html=alert_html, main_header=main_header, img_count=app.config['img_count'])
 
 
 @app.route('/login_form', methods=['GET', 'POST'])
@@ -169,7 +169,7 @@ def login_form():
     except:
         return render_template('login_form.html')
 
-    return flask.redirect(flask.url_for('home'))
+    return flask.redirect(flask.url_for('home', img_count=app.config['img_count']))
 
 
 
@@ -183,7 +183,7 @@ def login():
         user_cl = session.query(clUser.User).filter_by(nickname=nickname).first()
         print('Pass_base: ' + user_cl.password)
     except:
-        return flask.redirect(flask.url_for('login_form'))
+        return flask.redirect(flask.url_for('login_form', img_count=app.config['img_count']))
 
     print('Pass_post: ' + flask.request.form['password'])
     if flask.request.form['password'] == user_cl.password:
@@ -203,20 +203,20 @@ def login():
         flask_login.login_user(user)
     session.close()
 
-    return flask.redirect(flask.url_for('home'))
+    return flask.redirect(flask.url_for('home', img_count=app.config['img_count']))
 
 
 @app.route('/profile')
 @flask_login.login_required
 def profile():
-    return render_template('profile.html',user=flask_login.current_user)
+    return render_template('profile.html',user=flask_login.current_user, img_count=app.config['img_count'])
 
 
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
     g.user = 'Гость'
-    return flask.redirect(flask.url_for('login_form'))
+    return flask.redirect(flask.url_for('login_form', img_count=app.config['img_count']))
 
 
 @login_manager.unauthorized_handler
@@ -240,10 +240,10 @@ def delete():
             worker_id = flask.request.values['worker_id']
             wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
             session.close()
-            return flask.redirect(flask.url_for(redirect,worker=wor, worker_id = worker_id))
+            return flask.redirect(flask.url_for(redirect,worker=wor, worker_id = worker_id, img_count=app.config['img_count']))
     except Exception as e:
         logging.error(str(e))
-        return flask.redirect(flask.url_for(redirect))
+        return flask.redirect(flask.url_for(redirect, img_count=app.config['img_count']))
 
 
 
@@ -261,14 +261,14 @@ def user():
     main_header = 'Администрирование системных пользователей'
     session = Session()
     users = session.query(clUser.User).all()
-    return render_template('tables/user.html', users=users, main_header=main_header, alert_html=alert_html)
+    return render_template('tables/user.html', users=users, main_header=main_header, alert_html=alert_html, img_count=app.config['img_count'])
 
 @app.route('/user-add', methods=['GET', 'POST'])
 def user_add():
     main_header = 'Администрирование системных пользователей'
     header_text = ' Добавление учетной записи'
 
-    return render_template('add_edit_table/user.html', header_text=header_text, main_header=main_header, type_str='add')
+    return render_template('add_edit_table/user.html', header_text=header_text, main_header=main_header, type_str='add', img_count=app.config['img_count'])
 
 @app.route('/user-edit', methods=['GET', 'POST'])
 def user_edit():
@@ -278,14 +278,17 @@ def user_edit():
     id = flask.request.values['id']
     user_cl = session.query(clUser.User).filter_by(id=id).first()
     path = app.config['UPLOAD_FOLDER'] + str(id)+".png"
+    img = False
     try:
         f = open(path)
         f.close()
+        img = True
     except FileNotFoundError:
         path = "http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image"
     session.close()
 
-    return render_template('add_edit_table/user.html', path = path, user_cl=user_cl, header_text=header_text, main_header=main_header, type_str='edit')
+
+    return render_template('add_edit_table/user.html', img = img, path = path, user_cl=user_cl, header_text=header_text, main_header=main_header, type_str='edit', img_count=app.config['img_count'])
 
 @app.route('/user-save', methods=['GET', 'POST'])
 def user_save():
@@ -334,7 +337,7 @@ def user_save():
     users = session.query(clUser.User).all()
     session.close()
 
-    return flask.redirect(flask.url_for('user', alert_html=alert_html))
+    return flask.redirect(flask.url_for('user', alert_html=alert_html, img_count=app.config['img_count']))
 
 
 
@@ -350,7 +353,7 @@ def worker():
     workers = session.query(worker_py.Worker).all()
     session.close()
 
-    return render_template('tables/worker.html', workers=workers, main_header=main_header, alert_html=alert_html)
+    return render_template('tables/worker.html', workers=workers, main_header=main_header, alert_html=alert_html, img_count=app.config['img_count'])
 
 
 
@@ -359,7 +362,7 @@ def worker_add():
     main_header = 'Создание новой карточки работника'
 
 
-    return render_template('add_edit_table/worker.html', main_header=main_header, type_str='add')
+    return render_template('add_edit_table/worker.html', main_header=main_header, type_str='add', img_count=app.config['img_count'])
 
 
 
@@ -377,7 +380,7 @@ def worker_edit():
     wor.editor = session.query(clUser.User).filter_by(id=wor.editor_id).first()
     session.close()
 
-    return render_template('add_edit_table/worker.html', worker=wor, main_header=main_header, type_str='edit',alert_html=alert_html)
+    return render_template('add_edit_table/worker.html', worker=wor, main_header=main_header, type_str='edit',alert_html=alert_html, img_count=app.config['img_count'])
 
 
 @app.route('/worker-card-add', methods=['GET', 'POST'])
@@ -385,7 +388,7 @@ def worker_card_add():
     main_header = 'Создание новой карточки работника'
 
 
-    return render_template('add_edit_table/worker-card.html', main_header=main_header, type_str='add')
+    return render_template('add_edit_table/worker-card.html', main_header=main_header, type_str='add', img_count=app.config['img_count'])
 
 @app.route('/worker-card-edit', methods=['GET', 'POST'])
 def worker_card_edit():
@@ -399,14 +402,14 @@ def worker_card_edit():
     session.close()
 
     return render_template('add_edit_table/worker-card.html', worker=wor,  main_header=main_header,
-                           type_str='edit')
+                           type_str='edit', img_count=app.config['img_count'])
 
 @app.route('/worker-list-add', methods=['GET', 'POST'])
 def worker_list_add():
     main_header = 'Создание новой карточки работника'
 
 
-    return render_template('add_edit_table/worker-list.html',  main_header=main_header, type_str='add')
+    return render_template('add_edit_table/worker-list.html',  main_header=main_header, type_str='add', img_count=app.config['img_count'])
 
 
 @app.route('/worker-list-edit', methods=['GET', 'POST'])
@@ -419,7 +422,7 @@ def worker_list_edit():
     session.close()
 
     return render_template('add_edit_table/worker-list.html', worker=wor,  main_header=main_header,
-                           type_str='edit')
+                           type_str='edit', img_count=app.config['img_count'])
 
 @app.route('/worker-save', methods=['GET', 'POST'])
 def worker_save():
@@ -585,7 +588,7 @@ def worker_save():
         #
     session.close()
 
-    return flask.redirect(flask.url_for('worker', alert_html=alert_html))
+    return flask.redirect(flask.url_for('worker', alert_html=alert_html, img_count=app.config['img_count']))
 
 
 
@@ -611,7 +614,7 @@ def vac_certification():
 
     session.close()
 
-    return render_template('add_edit_table/vac_certification.html', vac_cert=vacs,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/vac_certification.html', vac_cert=vacs,worker=wor ,main_header=main_header, alert_html=alert_html, img_count=app.config['img_count'])
 
 
 
@@ -663,7 +666,7 @@ def vac_certification_save():
     users = session.query(clUser.User).all()
     session.close()
 
-    return flask.redirect(flask.url_for('vac_certification', alert_html=alert_html, worker_id=worker_id))
+    return flask.redirect(flask.url_for('vac_certification', alert_html=alert_html, worker_id=worker_id, img_count=app.config['img_count']))
 
 
 
@@ -686,7 +689,7 @@ def assignment_and_relocation():
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     session.close()
 
-    return render_template('add_edit_table/assignment_and_relocation.html', as_reloc=ars,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/assignment_and_relocation.html', as_reloc=ars,worker=wor ,main_header=main_header, alert_html=alert_html, img_count=app.config['img_count'])
 
 
 
@@ -754,7 +757,7 @@ def assignment_and_relocation_save():
 
     session.close()
 
-    return flask.redirect(flask.url_for('assignment_and_relocation', alert_html=alert_html, worker_id=worker_id))
+    return flask.redirect(flask.url_for('assignment_and_relocation', alert_html=alert_html, worker_id=worker_id, img_count=app.config['img_count']))
 
 
 
@@ -779,7 +782,7 @@ def kvalif_up():
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     session.close()
 
-    return render_template('add_edit_table/kvalif_up.html', kvalif=kvs,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/kvalif_up.html', kvalif=kvs,worker=wor ,main_header=main_header, alert_html=alert_html, img_count=app.config['img_count'])
 
 
 
@@ -839,7 +842,7 @@ def kvalif_up_save():
 
     session.close()
 
-    return flask.redirect(flask.url_for('kvalif_up', alert_html=alert_html, worker_id=worker_id))
+    return flask.redirect(flask.url_for('kvalif_up', alert_html=alert_html, worker_id=worker_id, img_count=app.config['img_count']))
 
 
 
@@ -864,7 +867,7 @@ def retraining():
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     session.close()
 
-    return render_template('add_edit_table/retraining.html', ret=rets,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/retraining.html', ret=rets,worker=wor ,main_header=main_header, alert_html=alert_html, img_count=app.config['img_count'])
 
 
 
@@ -924,7 +927,7 @@ def retraining_save():
 
     session.close()
 
-    return flask.redirect(flask.url_for('retraining', alert_html=alert_html, worker_id=worker_id))
+    return flask.redirect(flask.url_for('retraining', alert_html=alert_html, worker_id=worker_id, img_count=app.config['img_count']))
 
 
 
@@ -948,7 +951,7 @@ def vacation():
     wor = session.query(worker_py.Worker).filter_by(id=worker_id).first()
     session.close()
 
-    return render_template('add_edit_table/vacation.html', vacat=vs,worker=wor ,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/vacation.html', vacat=vs,worker=wor ,main_header=main_header, alert_html=alert_html, img_count=app.config['img_count'])
 
 
 
@@ -1018,7 +1021,7 @@ def vacation_save():
 
     session.close()
 
-    return flask.redirect(flask.url_for('vacation', alert_html=alert_html, worker_id=worker_id))
+    return flask.redirect(flask.url_for('vacation', alert_html=alert_html, worker_id=worker_id, img_count=app.config['img_count']))
 
 
 @app.route('/gen-worker-list', methods=['GET', 'POST'])
@@ -1064,7 +1067,7 @@ def staff_list():
 
     session.close()
 
-    return render_template('add_edit_table/staff_list.html', staff_lists=ars,main_header=main_header, alert_html=alert_html)
+    return render_template('add_edit_table/staff_list.html', staff_lists=ars,main_header=main_header, alert_html=alert_html, img_count=app.config['img_count'])
 
 
 
@@ -1148,7 +1151,7 @@ def staff_list_save():
 
     session.close()
 
-    return flask.redirect(flask.url_for('staff_list', alert_html=alert_html))
+    return flask.redirect(flask.url_for('staff_list', alert_html=alert_html, img_count=app.config['img_count']))
 
 
 
@@ -1189,7 +1192,7 @@ def notes_save():
 
     session.close()
 
-    return flask.redirect(flask.url_for('home', alert_html=alert_html))
+    return flask.redirect(flask.url_for('home', alert_html=alert_html, img_count=app.config['img_count']))
 
 
 
@@ -1199,13 +1202,14 @@ def notes_save():
 
 @app.route('/upload-user-pic', methods=['GET', 'POST'])
 def upload_user_pic():
-
+        app.config['img_count'] = app.config['img_count'] + 1
         user_id = flask.request.values['id']
         file = flask.request.files['file']
-        if file and Flask.mod.allowed_file(file.filename):
+        if file:
             filename = app.config['UPLOAD_FOLDER'] + str(user_id)+".png"
             file.save(filename)
-            return flask.redirect(flask.url_for('user_edit',id=user_id))
+
+        return flask.redirect(flask.url_for('user_edit',id=user_id, img_count=app.config['img_count']))
 
 
 @app.route('/upl', methods=['GET', 'POST'])

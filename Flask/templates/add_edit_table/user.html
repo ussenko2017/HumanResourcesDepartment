@@ -130,18 +130,160 @@
 
 <button type="submit" class="btn btn-theme">Сохранить</button>
 
-<form action="/upload-user-pic" method=post enctype=multipart/form-data>
-  <p><input type=file name=file>
-<input type="hidden"  value="{{ user_cl.id }}" name="id">
-    <input type=submit value="Загрузить">
-</form>
-<img src="static/files/photo/user/{{ user_cl.id }}.png" alt="">
 
-
-              </form>
+    </form>
             </div>
           </div>
 </div>
+
+            <div class="content-panel">
+                              <h4 class="mb"><i class="fa fa-angle-right"></i> Фотография</h4>
+
+<form  action="{{ url_for('upload_user_pic') }}" method=post enctype=multipart/form-data>
+
+
+
+
+
+
+<input type="hidden"  value="{{ user_cl.id }}" name="id">
+
+
+	<style type="text/css">
+		.file-upload input[type="file"]{
+			display: none;/* скрываем input file */
+		}
+		.file-form-wrap{
+			width:260px;
+			margin:auto;
+		}
+		.file-upload {
+			position: relative;
+			overflow: hidden;
+			width: 250px;
+			height:50px;
+			line-height:50px;
+			background: #4169E1;
+			border-radius: 10px;
+			color: #fff;
+			text-align: center;
+		}
+		.file-upload:hover {
+			background: #1E90FF;
+		}
+		/* Растягиваем label на всю область блока .file-upload */
+		.file-upload label {
+			display: block;
+			position: absolute;
+
+			width: 100%;
+			height: 100%;
+			cursor: pointer;
+		}
+		/* стиль текста на кнопке*/
+		.file-upload span {
+			font-weight:bold;
+		}
+		.preview-img{
+			max-width:100px;
+			max-height:100px;
+			margin:5px;
+		}
+	</style>
+
+
+	<div class="file-form-wrap">
+		<div class="file-upload">
+			<label>
+				<input id="uploaded-file1" type="file" name="file" onchange="getFileParam();" />
+				<span>Выберите файл</span><br />
+			</label>
+		</div>
+		<div id="preview1">&nbsp;</div>
+		<div id="file-name1">&nbsp;</div>
+		<div id="file-size1">&nbsp;</div>
+	</div>
+	<script type="text/javascript">
+	function getFileParam() {
+		try {
+			var file = document.getElementById('uploaded-file1').files[0];
+
+			if (file) {
+				var fileSize = 0;
+
+				if (file.size > 1024 * 1024) {
+					fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+				}else {
+					fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+				}
+
+				document.getElementById('file-name1').innerHTML = 'Имя: ' + file.name;
+				document.getElementById('file-size1').innerHTML = 'Размер: ' + fileSize;
+
+				if (/\.(jpeg|bmp|gif|png)$/i.test(file.name)) {
+					var elPreview = document.getElementById('preview1');
+					elPreview.innerHTML = '';
+					var newImg = document.createElement('img');
+					newImg.className = "preview-img";
+
+					if (typeof file.getAsDataURL=='function') {
+						if (file.getAsDataURL().substr(0,11)=='data:image/') {
+							newImg.onload=function() {
+								document.getElementById('file-name1').innerHTML+=' ('+newImg.naturalWidth+'x'+newImg.naturalHeight+' px)';
+							}
+							newImg.setAttribute('src',file.getAsDataURL());
+							elPreview.appendChild(newImg);
+						}
+					}else {
+						var reader = new FileReader();
+						reader.onloadend = function(evt) {
+							if (evt.target.readyState == FileReader.DONE) {
+								newImg.onload=function() {
+									document.getElementById('file-name1').innerHTML+=' ('+newImg.naturalWidth+'x'+newImg.naturalHeight+' px)';
+								}
+
+								newImg.setAttribute('src', evt.target.result);
+								elPreview.appendChild(newImg);
+							}
+						};
+
+						var blob;
+						if (file.slice) {
+							blob = file.slice(0, file.size);
+						}else if (file.webkitSlice) {
+								blob = file.webkitSlice(0, file.size);
+							}else if (file.mozSlice) {
+								blob = file.mozSlice(0, file.size);
+							}
+						reader.readAsDataURL(blob);
+					}
+				}
+			}
+		}catch(e) {
+			var file = document.getElementById('uploaded-file1').value;
+			file = file.replace(/\\/g, "/").split('/').pop();
+			document.getElementById('file-name1').innerHTML = 'Имя: ' + file;
+		}
+	}
+	</script>
+    <div style="text-align:center;"><input class="btn btn-theme"  type=submit value="Загрузить"></div>
+
+
+</form>
+    <div class="fileupload-new thumbnail" style="width: 200px; height: 150px; text-align:center;">
+        {% if img == True %}
+        <img style="display:block;
+margin:auto;" src="static/files/photo/user/{{ user_cl.id }}.png?salt={{ img_count }}" alt="">
+        {% else %}
+                        <img style="display:block;
+margin:auto;" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="">
+        {% endif %}
+
+
+
+    </div>
+            </div>
+
 
   <script src="lib/jquery-ui-1.9.2.custom.min.js"></script>
   <script type="text/javascript" src="lib/bootstrap-fileupload/bootstrap-fileupload.js"></script>
