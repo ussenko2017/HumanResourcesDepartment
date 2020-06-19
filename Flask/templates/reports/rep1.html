@@ -1,0 +1,154 @@
+{% extends "basic.html" %}
+
+{% block content %}
+
+
+<div class="col-md-12">
+            <div class="content-panel">
+        <form action="{{ url_for('genRep1') }}" method="post" >
+<table class="table">
+
+    <tr>
+        <th>
+            <br>
+    <br>
+            {% if type_report == '0' %}
+<select name="type_report" class="form-control">
+                  <option value="0" selected>В отпуске</option>
+                  <option value="1">В штате</option>
+
+                </select>
+            {% else %}
+            <select name="type_report" class="form-control">
+                  <option value="0" >В отпуске</option>
+                  <option value="1" selected>В штате</option>
+
+                </select>
+            {% endif %}
+
+            {% if type_date == '1' %}
+
+            <div class="radio">
+                <label>
+                  <input type="radio" name="type_date" id="optionsRadios1" value="0" >
+                  Отчет на текущую дату
+                  </label>
+              </div>
+            <div class="radio">
+                <label>
+                  <input type="radio" name="type_date" id="optionsRadios2" value="1" checked="">
+                  Отчет на выбранную дату:
+                  </label>
+
+              </div>
+
+
+                 <div class="control-label">
+
+                    <input class="form-control input-medium default-date-picker" id="date" size="16" type="date" name="date" value="{{ date }}">
+
+
+
+
+                  </div>
+{% else %}
+<div class="radio">
+                <label>
+                  <input type="radio" name="type_date" id="optionsRadios1" value="0" checked="">
+                  Отчет на текущую дату
+                  </label>
+              </div>
+            <div class="radio">
+                <label>
+                  <input type="radio" name="type_date" id="optionsRadios2" value="1">
+                  Отчет на выбранную дату:
+                  </label>
+
+              </div>
+
+
+                 <div class="control-label">
+
+                    <input class="form-control input-medium default-date-picker" id="date" size="16" type="date" name="date" value="">
+
+
+
+
+                  </div>
+            {% endif %}
+  </th>
+        <th>
+<div style="text-align: right;" class="dataTables_filter" id="hidden-table-info_filter">
+
+  <br>
+    <br>
+                <button type="submit" class="btn btn-theme02"><i class="fa fa-check"></i> Сформировать отчет</button>
+
+</div>
+</th>
+
+    </tr>
+</table>
+            </form>
+
+
+
+            <!-- /content-panel -->
+          </div>
+          <!-- /col-md-12 -->
+        </div>
+
+<br>
+    <br><br>
+    <br>
+
+<div class="col-md-12">
+            <div class="content-panel">
+                <H4>{{ text }}</H4>
+<table class="table table-bordered table-striped table-condensed">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>ФИО</th>
+                      <th >Период</th>
+                      <th >Основание</th>
+                      <th >Всего дней в отпуске</th>
+                      <th >Дата начала трудового отпуска</th>
+                      <th >Дата окончания трудового отпуска</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% if type_report == '0' %}
+                  {% for v in vac_list %}
+                    <tr>
+                      <td>{{ v.worker_id }}</td>
+                      <td>{{ v.lastname }} {{ v.firstname }} {{ v.patr }}</td>
+                      <td >{{ v.period }}</td>
+                      <td>{{ v.osnov }}</td>
+                      <td >{{ v.vsego_dney }}</td>
+                      <td>{{ v.date_begin }}</td>
+                      <td >{{ v.date_end }}</td>
+
+                    </tr>
+                  {% endfor %}
+
+                    {% else %}
+{% for v in vac_list %}
+                    <tr>
+                      <td>{{ v.worker_id }}</td>
+                      <td>{{ v.lastname }} {{ v.firstname }} {{ v.patr }}</td>
+                      <td ></td>
+                      <td></td>
+                      <td ></td>
+                      <td></td>
+                      <td ></td>
+
+                    </tr>
+                  {% endfor %}
+                  {% endif %}
+                  </tbody>
+                </table>
+    </div></div>
+
+{% endblock %}

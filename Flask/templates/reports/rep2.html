@@ -1,0 +1,97 @@
+{% extends "basic.html" %}
+
+{% block content %}
+
+
+<div class="col-md-12">
+            <div class="content-panel">
+        <form action="{{ url_for('genRep2') }}" method="post" >
+<table class="table">
+
+    <tr>
+        <th>
+            <br>
+    <br>
+            {% if post == '1' %}
+            <label>Интервал от:</label>
+                 <div class="control-label">
+                    <input class="form-control input-medium default-date-picker" id="date1" size="16" type="date" name="date1" value="{{ date1 }}">
+                     <br>
+  </div><label>До:</label>
+            <div class="control-label">
+                    <input class="form-control input-medium default-date-picker" id="date2" size="16" type="date" name="date2" value="{{ date2 }}">
+  </div>
+
+            {% else %}
+            <label>Интервал от:</label>
+            <div class="control-label">
+                    <input class="form-control input-medium default-date-picker" id="date1" size="16" type="date" name="date1" value="">
+  </div>
+            <br>
+            <label>До:</label>
+            <div class="control-label">
+                    <input class="form-control input-medium default-date-picker" id="date2" size="16" type="date" name="date2" value="">
+  </div>
+            {% endif %}
+  </th>
+        <th>
+<div style="text-align: right;" class="dataTables_filter" id="hidden-table-info_filter">
+
+  <br>
+    <br>
+                <button type="submit" class="btn btn-theme02"><i class="fa fa-check"></i> Сформировать отчет</button>
+
+</div>
+</th>
+
+    </tr>
+</table>
+            </form>
+
+
+
+            <!-- /content-panel -->
+          </div>
+          <!-- /col-md-12 -->
+        </div>
+
+<br>
+    <br><br>
+    <br>
+
+<div class="col-md-12">
+            <div class="content-panel">
+
+<table class="table table-bordered table-striped table-condensed">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>ФИО</th>
+                      <th >Дата назначения/перемещения</th>
+                      <th >Отдел</th>
+                      <th >Професссия</th>
+                      <th >Разряд</th>
+                      <th >Основание документа</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+{% for v in res %}
+                    <tr>
+                      <td>{{ v.worker_id }}</td>
+                      <td>{{ v.lastname }} {{ v.firstname }} {{ v.patr }}</td>
+                      <td>{{ v.date }}</td>
+                      <td>{{ v.otdel }}</td>
+                      <td >{{ v.prof }}</td>
+                      <td>{{ v.razrad }}</td>
+                      <td >{{ v.osnov_doc }}</td>
+
+                    </tr>
+                  {% endfor %}
+
+                  </tbody>
+                </table>
+    </div></div>
+
+{% endblock %}

@@ -31,7 +31,7 @@ UPLOADED_PHOTOS_DEST_USER = 'Flask/static/files/photo/user/'
 UPLOADED_PHOTOS_DEST_WORKER = 'Flask/static/files/photo/worker/'
 app.config['UPLOAD_FOLDER'] = UPLOADED_PHOTOS_DEST_USER
 
-logging.basicConfig(filename="log.txt", level = logging.ERROR)
+logging.basicConfig(filename="log.txt", level = logging.DEBUG)
 logging.info("Hello views!")
 app.config['img_count'] = 0
 
@@ -1231,3 +1231,99 @@ def upload_file():
 </form>
 
 '''
+
+
+@app.route('/rep1', methods=['GET', 'POST'])
+def genRep1():
+    today = datetime.today()
+    today = today.strftime("%Y-%m-%d")
+    logging.debug('today: ' + today)
+    main_header = 'Отчет по работникам (в отпуске/в штате) на текущий момент или на выбранную дату'
+    alert_html = request.args.get('alert_html')
+    if alert_html is None:
+        alert_html = ''
+    if request.method != 'POST':
+        return render_template('reports/rep1.html', main_header=main_header, alert_html=alert_html, date=today)
+    else:
+        type = flask.request.values['type_report']
+        session = Session()
+        type_date = flask.request.values['type_date']
+        if type_date == '0':
+            pass
+            logging.debug('today: ' + today)
+        elif type_date == '1':
+            date = flask.request.values['date']
+            today = date
+            logging.debug('Date: ' + today)
+        else:
+            today = ''
+            logging.debug('date empty: ' + today)
+        workers_count = session.execute('select count(id) from worker').first()[0]
+        sql_vac_count = "SELECT count(worker_id) FROM vacation " \
+          "right join worker on worker.id = vacation.worker_id " \
+          "where "+"'"+today+"'"+  " between vacation.date_begin and vacation.date_end group by worker_id"
+        try:
+            vac_count = session.execute(sql_vac_count).first()[0]
+        except:
+            vac_count  = 0
+        worked_count = workers_count - vac_count
+        if type == '0':
+            sql_vac_list = "SELECT * FROM vacation right join worker on worker.id = vacation.worker_id " \
+                "where " + "'" + today + "'" + " between vacation.date_begin and vacation.date_end group by worker_id "
+            vac_list = session.execute(sql_vac_list)
+            #logging.error("Vac_sql: " + sql)
+            text = 'По состоянию на '+ today +' , всего работников - ' + str(workers_count) + ', из них: ' \
+                                                                '\n в штате - ' + str(worked_count) + ', ' \
+                                                                '\nв отпуске - ' + str(vac_count) + '. \n' \
+                                                                 'Список работников в отпуске:'
+
+            return render_template('reports/rep1.html', main_header=main_header, workers_count=workers_count,
+                                   vac_count=vac_count, worked_count=worked_count, vac_list=vac_list, alert_html=alert_html,
+                                   type_report=type, text=text)
+
+        if type == '1':
+            sql_vac_list = "SELECT * FROM vacation right join worker on worker.id = vacation.worker_id " \
+                           "where " + "'" + today + "'" + " not between vacation.date_begin and vacation.date_end group by worker_id"
+            vac_list = session.execute(sql_vac_list)
+            # logging.error("Vac_sql: " + sql)
+            text = 'По состоянию на '+ today +' , всего работников - ' + str(workers_count) +', из них: ' \
+                                                                '\n в штате - ' + str(worked_count) +',' \
+                                                                '\nв отпуске - ' + str(vac_count) +'. \n' \
+                                                                'Список работников в штате:'
+            return render_template('reports/rep1.html', main_header=main_header, workers_count=workers_count,
+                                   vac_count=vac_count, worked_count=worked_count, vac_list=vac_list,
+                                   alert_html=alert_html, type_report=type, text=text, type_date=type_date, date=today)
+        else:
+            pass
+
+        return render_template('reports/rep1.html', main_header=main_header, alert_html=alert_html)
+
+
+
+
+
+@app.route('/rep2', methods=['GET', 'POST'])
+def genRep2():
+    post = 0
+    today = datetime.today()
+    today = today.strftime("%Y-%m-%d")
+    logging.debug('today: ' + today)
+    main_header = 'Отчет о назначениях и перемещениях сотрудников по диапазону дат'
+    alert_html = request.args.get('alert_html')
+    if alert_html is None:
+        alert_html = ''
+    if request.method != 'POST':
+
+        return render_template('reports/rep2.html', main_header=main_header, alert_html=alert_html, date=today)
+    else:
+        post = 1
+        session = Session()
+        date1 = flask.request.values['date1']
+        date2 = flask.request.values['date2']
+        sql = "SELECT * FROM assignment_and_relocation " \
+                           "right join worker on worker.id = assignment_and_relocation.worker_id " \
+                           "where assignment_and_relocation.date between " + "'" + date1 + "'" + " and " + "'" + date2 + "'" + ""
+
+        res = session.execute(sql)
+        return render_template('reports/rep2.html', main_header=main_header, alert_html=alert_html, res=res, post=post, date1=date1, date2=date2)
+
